@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SmartRoomSOP</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_font">Font</string>
+    <string name="action_clear">Clear canvas</string>
+    <string name="action_size">Size</string>
+    <string name="action_color">Color</string>
+    <string name="action_savetotext">Save to Text</string>
+    <string name="start">Select \"Create Mode\" to create a new text file with the data.\n\nSelect \"Open Mode\" to draw from the text file.\n\nSelect \"Read text file\" to read the text file.</string>
+
+</resources>
