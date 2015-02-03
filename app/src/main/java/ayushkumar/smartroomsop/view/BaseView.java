@@ -38,6 +38,7 @@ public class BaseView extends View {
     private Paint mPaint;
     private File file;
     private FileOutputStream fileOutputStream;
+    private Long startTime;
 
 
     public BaseView(Context context, AttributeSet attrs) {
@@ -117,7 +118,9 @@ public class BaseView extends View {
             e.printStackTrace();
         } finally {
         }
-        String data = System.currentTimeMillis() + ":" + x + "," + y + "\n" ;
+
+        //Subtract startTime from current time to reduce size of data
+        String data = (System.currentTimeMillis() - startTime) + ":" + x + "," + y + "\n" ;
         try {
             fileOutputStream.write(data.getBytes());
             fileOutputStream.close();
@@ -134,6 +137,10 @@ public class BaseView extends View {
         Log.d(TAG, "Time: " + System.currentTimeMillis() + ", Coordinates: (" + x + "," + y + ")" );
         storeValues(x,y);*/
 
+        //Set start time
+        if(startTime == null){
+            startTime = System.currentTimeMillis();
+        }
 
         mPath.reset();
         mPath.moveTo(x, y);
