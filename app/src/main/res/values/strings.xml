@@ -9,6 +9,7 @@
     <string name="action_size">Size</string>
     <string name="action_color">Color</string>
     <string name="action_savetotext">Save to Text</string>
+    <string name="action_play">Play</string>
     <string name="start">Select \"Create Mode\" to create a new text file with the data.\n\nSelect \"Open Mode\" to draw from the text file.\n\nSelect \"Read text file\" to read the text file.</string>
 
 </resources>

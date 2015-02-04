@@ -39,6 +39,7 @@ public class BaseView extends View {
     private File file;
     private FileOutputStream fileOutputStream;
     private Long startTime;
+    private boolean createMode;
 
 
     public BaseView(Context context, AttributeSet attrs) {
@@ -52,13 +53,21 @@ public class BaseView extends View {
         mPath = new Path();
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 
-        initFile(context);
+
     }
 
     public BaseView(Context context, Paint mPaint){
         this(context);
 
         this.mPaint = mPaint;
+    }
+
+    public BaseView(Context context, Paint mPaint, boolean createMode){
+        this(context,mPaint);
+        this.createMode = createMode;
+        if(createMode){
+            initFile(context);
+        }
     }
 
     public void initFile(Context context) {
@@ -110,7 +119,7 @@ public class BaseView extends View {
     private float mX, mY;
     private static final float TOUCH_TOLERANCE = 4;
 
-    private void storeValues(float x, float y) {
+    private void storeValues(float x, float y, char type) {
         try {
             fileOutputStream = new FileOutputStream(file,true);
         } catch (FileNotFoundException e) {
@@ -120,7 +129,7 @@ public class BaseView extends View {
         }
 
         //Subtract startTime from current time to reduce size of data
-        String data = (System.currentTimeMillis() - startTime) + ":" + x + "," + y + "\n" ;
+        String data = (System.currentTimeMillis() - startTime) + ":" + x + "," + y + ":" + type + "\n" ;
         try {
             fileOutputStream.write(data.getBytes());
             fileOutputStream.close();
@@ -142,6 +151,10 @@ public class BaseView extends View {
             startTime = System.currentTimeMillis();
         }
 
+        if(createMode){
+            storeValues(x,y,'s');
+        }
+        Log.d(TAG,"Touch_start : " + x + ","+ y + "  " + mX + "," + mY);
         mPath.reset();
         mPath.moveTo(x, y);
         mX = x;
@@ -159,8 +172,12 @@ public class BaseView extends View {
 
 
             //Store this coordinate too
-            Log.d(TAG, "Time: " + System.currentTimeMillis() + ", Coordinates: (" + x + "," + y + ")" );
-            storeValues(x,y);
+           // Log.d(TAG, "Time: " + System.currentTimeMillis() + ", Coordinates: (" + x + "," + y + ")" );
+            Log.d(TAG,"Touch_move : " + x + ","+ y + "  " + mX + "," + mY);
+
+            if(createMode){
+                storeValues(x,y,'m');
+            }
         }
     }
     private void touch_up() {
@@ -169,6 +186,10 @@ public class BaseView extends View {
        /* //End storing
         Log.d(TAG, "Time: " + System.currentTimeMillis() + ", Coordinates: (" + mX + "," + mY + ")" );
         storeValues(mX,mY);*/
+        if(createMode){
+            storeValues(mX,mY,'e');
+        }
+        Log.d(TAG,"Touch_end : "+ mX + "," + mY);
 
         // commit the path to our offscreen
         mCanvas.drawPath(mPath, mPaint);
@@ -219,5 +240,20 @@ public class BaseView extends View {
             e.printStackTrace();
         } finally {
         }
+    }
+
+    public void startDrawing(float x, float y) {
+        touch_start(x,y);
+        invalidate();
+    }
+
+    public void continueDrawing(float x,float y) {
+        touch_move(x,y);
+        invalidate();
+    }
+
+    public void stopDrawing(float x,float y) {
+        touch_up();
+        invalidate();
     }
 }

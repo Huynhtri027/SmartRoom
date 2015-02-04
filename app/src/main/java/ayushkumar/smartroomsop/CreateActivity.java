@@ -28,7 +28,7 @@ public class CreateActivity extends ActionBarActivity {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(12);
 
-        baseView = new BaseView(this, mPaint);
+        baseView = new BaseView(this, mPaint, true);
         setContentView(baseView);
 
     }
