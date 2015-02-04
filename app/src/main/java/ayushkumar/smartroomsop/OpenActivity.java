@@ -1,11 +1,9 @@
 package ayushkumar.smartroomsop;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,10 +13,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import ayushkumar.smartroomsop.events.ContinueDrawingBackgroundEvent;
 import ayushkumar.smartroomsop.events.ContinueDrawingEvent;
@@ -56,7 +52,6 @@ public class OpenActivity extends BaseActivity {
 
         baseView = new BaseView(this, mPaint, false);
         setContentView(baseView);
-        //setContentView(R.layout.activity_open);
     }
 
     @Override
@@ -110,27 +105,25 @@ public class OpenActivity extends BaseActivity {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
-            //Log.d(TAG,"In try of playFromTextFile");
-            //Log.d(TAG,"Line : " + br.readLine());
 
             while ((line = br.readLine()) != null) {
                 // process the line.
-                Log.d(TAG, line + " being processed");
+//                Log.d(TAG, line + " being processed");
                 String type = line.split(":")[2];
-                Log.d(TAG, "Type " + type);
+//                Log.d(TAG, "Type " + type);
                 if (type != null) {
                     String parts[] = line.split(":");
                     float x = Float.parseFloat(parts[1].split(",")[0]);
                     float y = Float.parseFloat(parts[1].split(",")[1]);
                     Long time = Long.parseLong(parts[0]);
                     if (type.equals("s")) {
-                        EventBus.getDefault().post(new StartDrawingBackgroundEvent(time,y,x));
+                        EventBus.getDefault().post(new StartDrawingBackgroundEvent(time, y, x));
                         //startDrawing(line);
                     } else if (type.equals("m")) {
-                        EventBus.getDefault().post(new ContinueDrawingBackgroundEvent(time,y,x));
+                        EventBus.getDefault().post(new ContinueDrawingBackgroundEvent(time, y, x));
                         //continueDrawing(line);
                     } else {
-                        EventBus.getDefault().post(new StopDrawingBackgroundEvent(time,y,x));
+                        EventBus.getDefault().post(new StopDrawingBackgroundEvent(time, y, x));
                         //stopDrawing(line);
                     }
                 }
@@ -151,21 +144,6 @@ public class OpenActivity extends BaseActivity {
 
     }*/
 
-    public void onEventBackgroundThread(StopDrawingBackgroundEvent stopDrawingBackgroundEvent){
-        //Sleep
-        //Sleep for a specific period
-        try {
-            Thread.sleep(stopDrawingBackgroundEvent.getTime() - lastTime);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        EventBus.getDefault().post(new StopDrawingEvent(stopDrawingBackgroundEvent));
-    }
-
-    public void onEventMainThread(StopDrawingEvent stopDrawingEvent){
-        baseView.stopDrawing(stopDrawingEvent.getX(),stopDrawingEvent.getY());
-    }
-
     /*private void continueDrawing(String line) {
         String parts[] = line.split(":");
         float x = Float.parseFloat(parts[1].split(",")[0]);
@@ -182,22 +160,6 @@ public class OpenActivity extends BaseActivity {
         Log.d(TAG, "Continue drawing at " + x + "," + y);
 
     }*/
-
-    public void onEventBackgroundThread(ContinueDrawingBackgroundEvent continueDrawingBackgroundEvent){
-
-        //Sleep for a specific period
-        try {
-            Thread.sleep(continueDrawingBackgroundEvent.getTime() - lastTime);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        lastTime = continueDrawingBackgroundEvent.getTime();
-        EventBus.getDefault().post(new ContinueDrawingEvent(continueDrawingBackgroundEvent));
-    }
-
-    public void onEventMainThread(ContinueDrawingEvent continueDrawingEvent){
-        baseView.continueDrawing(continueDrawingEvent.getX(),continueDrawingEvent.getY());
-    }
 
     /*private void startDrawing(String line) {
         String parts[] = line.split(":");
@@ -217,11 +179,41 @@ public class OpenActivity extends BaseActivity {
         Log.d(TAG, "Start drawing at " + x + "," + y);
     }*/
 
+
+
+    public void onEventBackgroundThread(StopDrawingBackgroundEvent stopDrawingBackgroundEvent) {
+        //Sleep for a specific period
+        try {
+            Thread.sleep(stopDrawingBackgroundEvent.getTime() - lastTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        EventBus.getDefault().post(new StopDrawingEvent(stopDrawingBackgroundEvent));
+    }
+
+    public void onEventMainThread(StopDrawingEvent stopDrawingEvent) {
+        baseView.stopDrawing(stopDrawingEvent.getX(), stopDrawingEvent.getY());
+    }
+
+    public void onEventBackgroundThread(ContinueDrawingBackgroundEvent continueDrawingBackgroundEvent) {
+        //Sleep for a specific period
+        try {
+            Thread.sleep(continueDrawingBackgroundEvent.getTime() - lastTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        lastTime = continueDrawingBackgroundEvent.getTime();
+        EventBus.getDefault().post(new ContinueDrawingEvent(continueDrawingBackgroundEvent));
+    }
+
+    public void onEventMainThread(ContinueDrawingEvent continueDrawingEvent) {
+        baseView.continueDrawing(continueDrawingEvent.getX(), continueDrawingEvent.getY());
+    }
+
     public void onEventBackgroundThread(StartDrawingBackgroundEvent startDrawingBackgroundEvent) {
         if (lastTime == null) {
             lastTime = 0L;
         }
-        //Pause for certain period of time
         //Sleep for a specific period
         try {
             Thread.sleep(startDrawingBackgroundEvent.getTime() - lastTime);
@@ -254,7 +246,7 @@ public class OpenActivity extends BaseActivity {
             // to know is we can neither read nor write
             check = false;
         }
-        Log.d(TAG, "CHECK value " + check);
+//        Log.d(TAG, "CHECK value " + check);
 
         if (check) {
             file = new File(context.getExternalFilesDir(null)

@@ -2,7 +2,6 @@ package ayushkumar.smartroomsop;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -53,16 +52,16 @@ public class CreateActivity extends BaseActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        switch (id){
-            case R.id.action_clear :
+        switch (id) {
+            case R.id.action_clear:
                 baseView.clearCanvas();
 
                 return true;
-            case R.id.action_size :
+            case R.id.action_size:
 
 
                 return true;
-            case R.id.action_color :
+            case R.id.action_color:
                 baseView.setPaintColor(Color.BLUE);
                 return true;
             /*case R.id.action_savetotext:
@@ -73,7 +72,7 @@ public class CreateActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onEvent(StartDrawingEvent startDrawingEvent){
-        Toast.makeText(this,"start drawing",Toast.LENGTH_SHORT).show();
+    public void onEvent(StartDrawingEvent startDrawingEvent) {
+        Toast.makeText(this, "start drawing", Toast.LENGTH_SHORT).show();
     }
 }
