@@ -6,11 +6,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import ayushkumar.smartroomsop.events.StartDrawingEvent;
 import ayushkumar.smartroomsop.view.BaseView;
 
 
-public class CreateActivity extends ActionBarActivity {
+public class CreateActivity extends BaseActivity {
 
     Paint mPaint;
     BaseView baseView;
@@ -69,5 +71,9 @@ public class CreateActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onEvent(StartDrawingEvent startDrawingEvent){
+        Toast.makeText(this,"start drawing",Toast.LENGTH_SHORT).show();
     }
 }

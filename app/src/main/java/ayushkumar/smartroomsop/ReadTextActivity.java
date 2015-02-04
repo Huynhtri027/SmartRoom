@@ -14,10 +14,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import ayushkumar.smartroomsop.events.StartDrawingEvent;
+
 /**
  * Created by Ayush on 22-01-15.
  */
-public class ReadTextActivity extends Activity{
+public class ReadTextActivity extends BaseActivity{
 
     private File file;
     private FileOutputStream fileOutputStream;
@@ -80,5 +82,10 @@ public class ReadTextActivity extends Activity{
             Toast.makeText(context, "Can't access SD Card.", Toast.LENGTH_LONG).show();
             Log.i(TAG,"Mem card not available?");
         }
+    }
+
+    public void onEvent(StartDrawingEvent startDrawingEvent){
+        //TODO Remove
+        Toast.makeText(this, "Start Drawing", Toast.LENGTH_SHORT).show();
     }
 }

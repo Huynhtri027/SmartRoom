@@ -20,19 +20,27 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import ayushkumar.smartroomsop.events.ContinueDrawingBackgroundEvent;
+import ayushkumar.smartroomsop.events.ContinueDrawingEvent;
+import ayushkumar.smartroomsop.events.StartDrawingBackgroundEvent;
+import ayushkumar.smartroomsop.events.StartDrawingEvent;
+import ayushkumar.smartroomsop.events.StopDrawingBackgroundEvent;
+import ayushkumar.smartroomsop.events.StopDrawingEvent;
 import ayushkumar.smartroomsop.view.BaseView;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by Ayush on 22-01-15.
  */
-public class OpenActivity extends ActionBarActivity {
+public class OpenActivity extends BaseActivity {
 
-    private static final String TAG="OpenActvity";
+    private static final String TAG = "OpenActvity";
     Paint mPaint;
     BaseView baseView;
     File file;
     FileInputStream fileInputStream;
     Long lastTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +70,7 @@ public class OpenActivity extends ActionBarActivity {
     protected void onPause() {
         super.onPause();
 
-        if(fileInputStream != null){
+        if (fileInputStream != null) {
             try {
                 fileInputStream.close();
             } catch (IOException e) {
@@ -76,7 +84,7 @@ public class OpenActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        switch (id){
+        switch (id) {
             case R.id.action_play:
                 Log.d(TAG, "Play");
                 playFromTextFile();
@@ -99,7 +107,7 @@ public class OpenActivity extends ActionBarActivity {
         Log.d(TAG,file.toString());
         Log.d(TAG,"Length : "+file.length()+"");*/
 
-        try{
+        try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             //Log.d(TAG,"In try of playFromTextFile");
@@ -107,36 +115,58 @@ public class OpenActivity extends ActionBarActivity {
 
             while ((line = br.readLine()) != null) {
                 // process the line.
-                Log.d(TAG,line +  " being processed");
+                Log.d(TAG, line + " being processed");
                 String type = line.split(":")[2];
                 Log.d(TAG, "Type " + type);
-                if(type!=null){
-                    if(type.equals("s")){
-                        startDrawing(line);
-                    }else if(type.equals("m")){
-                        continueDrawing(line);
-                    }else{
-                        stopDrawing(line);
+                if (type != null) {
+                    String parts[] = line.split(":");
+                    float x = Float.parseFloat(parts[1].split(",")[0]);
+                    float y = Float.parseFloat(parts[1].split(",")[1]);
+                    Long time = Long.parseLong(parts[0]);
+                    if (type.equals("s")) {
+                        EventBus.getDefault().post(new StartDrawingBackgroundEvent(time,y,x));
+                        //startDrawing(line);
+                    } else if (type.equals("m")) {
+                        EventBus.getDefault().post(new ContinueDrawingBackgroundEvent(time,y,x));
+                        //continueDrawing(line);
+                    } else {
+                        EventBus.getDefault().post(new StopDrawingBackgroundEvent(time,y,x));
+                        //stopDrawing(line);
                     }
                 }
             }
             br.close();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void stopDrawing(String line) {
+   /* private void stopDrawing(String line) {
         String parts[] = line.split(":");
         float x = Float.parseFloat(parts[1].split(",")[0]);
         float y = Float.parseFloat(parts[1].split(",")[1]);
 
-        baseView.stopDrawing(x,y);
+        baseView.stopDrawing(x, y);
         Log.d(TAG, "Stop drawing at " + x + "," + y);
 
+    }*/
+
+    public void onEventBackgroundThread(StopDrawingBackgroundEvent stopDrawingBackgroundEvent){
+        //Sleep
+        //Sleep for a specific period
+        try {
+            Thread.sleep(stopDrawingBackgroundEvent.getTime() - lastTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        EventBus.getDefault().post(new StopDrawingEvent(stopDrawingBackgroundEvent));
     }
 
-    private void continueDrawing(String line) {
+    public void onEventMainThread(StopDrawingEvent stopDrawingEvent){
+        baseView.stopDrawing(stopDrawingEvent.getX(),stopDrawingEvent.getY());
+    }
+
+    /*private void continueDrawing(String line) {
         String parts[] = line.split(":");
         float x = Float.parseFloat(parts[1].split(",")[0]);
         float y = Float.parseFloat(parts[1].split(",")[1]);
@@ -148,16 +178,32 @@ public class OpenActivity extends ActionBarActivity {
             e.printStackTrace();
         }
         lastTime = time;
-        baseView.continueDrawing(x,y);
+        baseView.continueDrawing(x, y);
         Log.d(TAG, "Continue drawing at " + x + "," + y);
 
+    }*/
+
+    public void onEventBackgroundThread(ContinueDrawingBackgroundEvent continueDrawingBackgroundEvent){
+
+        //Sleep for a specific period
+        try {
+            Thread.sleep(continueDrawingBackgroundEvent.getTime() - lastTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        lastTime = continueDrawingBackgroundEvent.getTime();
+        EventBus.getDefault().post(new ContinueDrawingEvent(continueDrawingBackgroundEvent));
     }
 
-    private void startDrawing(String line) {
+    public void onEventMainThread(ContinueDrawingEvent continueDrawingEvent){
+        baseView.continueDrawing(continueDrawingEvent.getX(),continueDrawingEvent.getY());
+    }
+
+    /*private void startDrawing(String line) {
         String parts[] = line.split(":");
         float x = Float.parseFloat(parts[1].split(",")[0]);
         float y = Float.parseFloat(parts[1].split(",")[1]);
-        if(lastTime == null){
+        if (lastTime == null) {
             lastTime = 0L;
         }
         Long time = Long.parseLong(parts[0]);
@@ -167,11 +213,33 @@ public class OpenActivity extends ActionBarActivity {
             e.printStackTrace();
         }
         lastTime = time;
-        baseView.startDrawing(x,y);
+        baseView.startDrawing(x, y);
         Log.d(TAG, "Start drawing at " + x + "," + y);
+    }*/
+
+    public void onEventBackgroundThread(StartDrawingBackgroundEvent startDrawingBackgroundEvent) {
+        if (lastTime == null) {
+            lastTime = 0L;
+        }
+        //Pause for certain period of time
+        //Sleep for a specific period
+        try {
+            Thread.sleep(startDrawingBackgroundEvent.getTime() - lastTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        lastTime = startDrawingBackgroundEvent.getTime();
+        EventBus.getDefault().post(new StartDrawingEvent(startDrawingBackgroundEvent));
+
     }
 
-    public void initFile(Context context){
+    public void onEventMainThread(StartDrawingEvent startDrawingEvent) {
+        baseView.startDrawing(startDrawingEvent.getX(), startDrawingEvent.getY());
+        Log.d(TAG, "Start drawing at " + startDrawingEvent.getX() + "," + startDrawingEvent.getY());
+    }
+
+    public void initFile(Context context) {
         String state = Environment.getExternalStorageState();
         boolean check;
         if (Environment.MEDIA_MOUNTED.equals(state)) {
@@ -186,15 +254,15 @@ public class OpenActivity extends ActionBarActivity {
             // to know is we can neither read nor write
             check = false;
         }
-        Log.d(TAG,"CHECK value " + check);
+        Log.d(TAG, "CHECK value " + check);
 
         if (check) {
             file = new File(context.getExternalFilesDir(null)
                     + File.separator + (Constants.filename));
-            if(file.exists()){
-                Log.d(TAG,"File exists");
-            }else{
-                Log.d(TAG,"File doesn't exist");
+            if (file.exists()) {
+                Log.d(TAG, "File exists");
+            } else {
+                Log.d(TAG, "File doesn't exist");
             }
             try {
                 fileInputStream = new FileInputStream(file);
@@ -202,9 +270,9 @@ public class OpenActivity extends ActionBarActivity {
                 Log.d(TAG, "File not found");
                 e.printStackTrace();
             }
-        }else{
+        } else {
             Toast.makeText(context, "Can't access SD Card.", Toast.LENGTH_LONG).show();
-            Log.i(TAG,"Mem card not available?");
+            Log.i(TAG, "Mem card not available?");
         }
     }
 }
