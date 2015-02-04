@@ -3,6 +3,7 @@
     package="ayushkumar.smartroomsop" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -17,20 +18,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".CreateActivity"
             android:label="Create Mode" >
         </activity>
-
         <activity
             android:name=".ReadTextActivity"
             android:label="Read Mode" >
         </activity>
-
         <activity
             android:name=".OpenActivity"
             android:label="Open Mode" >
+        </activity>
+        <activity
+            android:name=".BaseActivity"
+            android:label="@string/title_activity_base" >
         </activity>
     </application>
 
