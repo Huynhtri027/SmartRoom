@@ -227,6 +227,12 @@ public class BaseView extends View {
     public void clearCanvas(){
         mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         invalidate();
+
+        if(createMode){
+            //Reset everything
+            initFile(getContext());
+            startTime = null;
+        }
         /*Paint clearPaint = new Paint();
         clearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         mCanvas.drawRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight(), clearPaint);*/
