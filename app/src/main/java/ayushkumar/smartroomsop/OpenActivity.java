@@ -32,6 +32,7 @@ public class OpenActivity extends ActionBarActivity {
     BaseView baseView;
     File file;
     FileInputStream fileInputStream;
+    Long lastTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +102,7 @@ public class OpenActivity extends ActionBarActivity {
         try{
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
-            Log.d(TAG,"In try of playFromTextFile");
+            //Log.d(TAG,"In try of playFromTextFile");
             //Log.d(TAG,"Line : " + br.readLine());
 
             while ((line = br.readLine()) != null) {
@@ -126,24 +127,46 @@ public class OpenActivity extends ActionBarActivity {
     }
 
     private void stopDrawing(String line) {
-        float x = Float.parseFloat(line.split(":")[1].split(",")[0]);
-        float y = Float.parseFloat(line.split(":")[1].split(",")[1]);
+        String parts[] = line.split(":");
+        float x = Float.parseFloat(parts[1].split(",")[0]);
+        float y = Float.parseFloat(parts[1].split(",")[1]);
+
         baseView.stopDrawing(x,y);
         Log.d(TAG, "Stop drawing at " + x + "," + y);
 
     }
 
     private void continueDrawing(String line) {
-        float x = Float.parseFloat(line.split(":")[1].split(",")[0]);
-        float y = Float.parseFloat(line.split(":")[1].split(",")[1]);
+        String parts[] = line.split(":");
+        float x = Float.parseFloat(parts[1].split(",")[0]);
+        float y = Float.parseFloat(parts[1].split(",")[1]);
+
+        Long time = Long.parseLong(parts[0]);
+        try {
+            Thread.sleep(time - lastTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        lastTime = time;
         baseView.continueDrawing(x,y);
         Log.d(TAG, "Continue drawing at " + x + "," + y);
 
     }
 
     private void startDrawing(String line) {
-        float x = Float.parseFloat(line.split(":")[1].split(",")[0]);
-        float y = Float.parseFloat(line.split(":")[1].split(",")[1]);
+        String parts[] = line.split(":");
+        float x = Float.parseFloat(parts[1].split(",")[0]);
+        float y = Float.parseFloat(parts[1].split(",")[1]);
+        if(lastTime == null){
+            lastTime = 0L;
+        }
+        Long time = Long.parseLong(parts[0]);
+        try {
+            Thread.sleep(time - lastTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        lastTime = time;
         baseView.startDrawing(x,y);
         Log.d(TAG, "Start drawing at " + x + "," + y);
     }
