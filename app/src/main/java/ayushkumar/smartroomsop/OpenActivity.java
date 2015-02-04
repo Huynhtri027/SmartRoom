@@ -56,7 +56,6 @@ public class OpenActivity extends BaseActivity {
 
         baseView = new BaseView(this, mPaint, false);
         setContentView(baseView);
-        //setContentView(R.layout.activity_open);
     }
 
     @Override
@@ -110,14 +109,12 @@ public class OpenActivity extends BaseActivity {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
-            //Log.d(TAG,"In try of playFromTextFile");
-            //Log.d(TAG,"Line : " + br.readLine());
 
             while ((line = br.readLine()) != null) {
                 // process the line.
-                Log.d(TAG, line + " being processed");
+//                Log.d(TAG, line + " being processed");
                 String type = line.split(":")[2];
-                Log.d(TAG, "Type " + type);
+//                Log.d(TAG, "Type " + type);
                 if (type != null) {
                     String parts[] = line.split(":");
                     float x = Float.parseFloat(parts[1].split(",")[0]);
@@ -152,7 +149,6 @@ public class OpenActivity extends BaseActivity {
     }*/
 
     public void onEventBackgroundThread(StopDrawingBackgroundEvent stopDrawingBackgroundEvent){
-        //Sleep
         //Sleep for a specific period
         try {
             Thread.sleep(stopDrawingBackgroundEvent.getTime() - lastTime);
@@ -221,7 +217,6 @@ public class OpenActivity extends BaseActivity {
         if (lastTime == null) {
             lastTime = 0L;
         }
-        //Pause for certain period of time
         //Sleep for a specific period
         try {
             Thread.sleep(startDrawingBackgroundEvent.getTime() - lastTime);
@@ -254,7 +249,7 @@ public class OpenActivity extends BaseActivity {
             // to know is we can neither read nor write
             check = false;
         }
-        Log.d(TAG, "CHECK value " + check);
+//        Log.d(TAG, "CHECK value " + check);
 
         if (check) {
             file = new File(context.getExternalFilesDir(null)

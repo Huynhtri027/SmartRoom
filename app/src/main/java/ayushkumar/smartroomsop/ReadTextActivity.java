@@ -1,6 +1,5 @@
 package ayushkumar.smartroomsop;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,7 +21,7 @@ import ayushkumar.smartroomsop.events.StartDrawingEvent;
 public class ReadTextActivity extends BaseActivity{
 
     private File file;
-    private FileOutputStream fileOutputStream;
+//    private FileOutputStream fileOutputStream;
     private FileInputStream fileInputStream;
     private static final String TAG = "ReadTextActivity";
 
@@ -47,8 +46,6 @@ public class ReadTextActivity extends BaseActivity{
             fileInputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-
         }
         return new String(bytes);
     }
