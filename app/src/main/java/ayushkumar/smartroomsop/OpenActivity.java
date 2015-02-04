@@ -22,6 +22,8 @@ import ayushkumar.smartroomsop.events.StartDrawingBackgroundEvent;
 import ayushkumar.smartroomsop.events.StartDrawingEvent;
 import ayushkumar.smartroomsop.events.StopDrawingBackgroundEvent;
 import ayushkumar.smartroomsop.events.StopDrawingEvent;
+import ayushkumar.smartroomsop.util.BaseActivity;
+import ayushkumar.smartroomsop.util.Constants;
 import ayushkumar.smartroomsop.view.BaseView;
 import de.greenrobot.event.EventBus;
 

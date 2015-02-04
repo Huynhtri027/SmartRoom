@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import ayushkumar.smartroomsop.events.StartDrawingEvent;
+import ayushkumar.smartroomsop.util.BaseActivity;
 import ayushkumar.smartroomsop.view.BaseView;
 
 

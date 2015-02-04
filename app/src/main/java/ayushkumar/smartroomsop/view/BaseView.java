@@ -19,7 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import ayushkumar.smartroomsop.Constants;
+import ayushkumar.smartroomsop.util.Constants;
 
 /**
  * Created by Ayush on 22-01-15.

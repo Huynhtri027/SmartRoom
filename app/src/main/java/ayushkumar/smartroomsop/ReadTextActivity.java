@@ -10,15 +10,16 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import ayushkumar.smartroomsop.events.StartDrawingEvent;
+import ayushkumar.smartroomsop.util.BaseActivity;
+import ayushkumar.smartroomsop.util.Constants;
 
 /**
  * Created by Ayush on 22-01-15.
  */
-public class ReadTextActivity extends BaseActivity{
+public class ReadTextActivity extends BaseActivity {
 
     private File file;
 //    private FileOutputStream fileOutputStream;
