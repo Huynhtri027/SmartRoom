@@ -27,9 +27,6 @@ import ayushkumar.smartroomsop.Constants;
 public class BaseView extends View {
 
     private static final String TAG = "BaseView";
-    private static final float MINP = 0.25f;
-    private static final float MAXP = 0.75f;
-    
 
     private Bitmap mBitmap;
     private Canvas mCanvas;
@@ -46,22 +43,23 @@ public class BaseView extends View {
         super(context, attrs);
     }
 
-    /* This constructor will be used */
     public BaseView(Context context) {
         super(context);
-
         mPath = new Path();
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
-
-
     }
 
     public BaseView(Context context, Paint mPaint){
         this(context);
-
         this.mPaint = mPaint;
     }
 
+    /**
+     * Constructor to be used
+     * @param context context
+     * @param mPaint The paint object
+     * @param createMode Whether in Create Mode or Open Mode
+     */
     public BaseView(Context context, Paint mPaint, boolean createMode){
         this(context,mPaint);
         this.createMode = createMode;
@@ -70,6 +68,10 @@ public class BaseView extends View {
         }
     }
 
+    /**
+     * Initialize File object
+     * @param context  Context
+     */
     public void initFile(Context context) {
         String state = Environment.getExternalStorageState();
         boolean check;
@@ -117,17 +119,25 @@ public class BaseView extends View {
     }
 
     private float mX, mY;
+    /**
+     * Tolerance value for touch events
+     */
     private static final float TOUCH_TOLERANCE = 4;
 
+
+    /**
+     * Store coordinates in file
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param type 's' for Start, 'm' for Move, 'e' for End
+     */
     private void storeValues(float x, float y, char type) {
         try {
             fileOutputStream = new FileOutputStream(file,true);
         } catch (FileNotFoundException e) {
             Log.d(TAG,"File not found");
             e.printStackTrace();
-        } finally {
         }
-
         //Subtract startTime from current time to reduce size of data
         String data = (System.currentTimeMillis() - startTime) + ":" + x + "," + y + ":" + type + "\n" ;
         try {
@@ -135,60 +145,76 @@ public class BaseView extends View {
             fileOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-
         }
     }
 
-
+    /**
+     * Start of drawing upon touch. Function reused in both Craete & Open Mode
+     * @param x x-coordinate
+     * @param y y-coordinate
+     */
     private void touch_start(float x, float y) {
         /*//Store initial coordinates
         Log.d(TAG, "Time: " + System.currentTimeMillis() + ", Coordinates: (" + x + "," + y + ")" );
         storeValues(x,y);*/
 
-        //Set start time
+        //Set start time if not already set
+        //TODO Find better way to approach this(As this has to be taken care of in other functions manually, eg clearCanvas)
         if(startTime == null){
             startTime = System.currentTimeMillis();
         }
 
+        //Store these coordinates
         if(createMode){
             storeValues(x,y,'s');
         }
-        Log.d(TAG,"Touch_start : " + x + ","+ y + "  " + mX + "," + mY);
+
+        //Log.d(TAG,"Touch_start : " + x + ","+ y + "  " + mX + "," + mY);
+
         mPath.reset();
         mPath.moveTo(x, y);
         mX = x;
         mY = y;
     }
 
+    /**
+     * Continue drawing. Function reused for both Create & Open Mode
+     * @param x x-coordinate
+     * @param y y-coordinate
+     */
     private void touch_move(float x, float y) {
 
         float dx = Math.abs(x - mX);
         float dy = Math.abs(y - mY);
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
+            //Make bezier curve through the points
             mPath.quadTo(mX, mY, (x + mX)/2, (y + mY)/2);
             mX = x;
             mY = y;
+            //Log.d(TAG,"Touch_move : " + x + ","+ y + "  " + mX + "," + mY);
 
-
-            //Store this coordinate too
-           // Log.d(TAG, "Time: " + System.currentTimeMillis() + ", Coordinates: (" + x + "," + y + ")" );
-            Log.d(TAG,"Touch_move : " + x + ","+ y + "  " + mX + "," + mY);
-
+            //Store these coordinates
             if(createMode){
                 storeValues(x,y,'m');
             }
         }
     }
+
+    /**
+     * Stop drawing once finger lifted
+     */
     private void touch_up() {
         mPath.lineTo(mX, mY);
 
        /* //End storing
         Log.d(TAG, "Time: " + System.currentTimeMillis() + ", Coordinates: (" + mX + "," + mY + ")" );
         storeValues(mX,mY);*/
+
+        //Store coordinates
         if(createMode){
             storeValues(mX,mY,'e');
         }
+
         Log.d(TAG,"Touch_end : "+ mX + "," + mY);
 
         // commit the path to our offscreen
@@ -224,6 +250,9 @@ public class BaseView extends View {
         mPaint.setColor(color);
     }
 
+    /**
+     * Clear the canvas
+     */
     public void clearCanvas(){
         mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         invalidate();
@@ -233,31 +262,47 @@ public class BaseView extends View {
             initFile(getContext());
             startTime = null;
         }
-        /*Paint clearPaint = new Paint();
+        /*
+        //Alternate way to clear canvas
+        Paint clearPaint = new Paint();
         clearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         mCanvas.drawRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight(), clearPaint);*/
     }
 
 
-    public void saveToText() {
+    /*public void saveToText() {
         try {
             fileOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
         }
-    }
+    }*/
 
+    /**
+     * Intermediates between Open Mode & BaseView
+     * @param x x-coordinate
+     * @param y y-coordinate
+     */
     public void startDrawing(float x, float y) {
         touch_start(x,y);
         invalidate();
     }
 
+    /**
+     * Intermediates between Open Mode & BaseView
+     * @param x x-coordinate
+     * @param y y-coordinate
+     */
     public void continueDrawing(float x,float y) {
         touch_move(x,y);
         invalidate();
     }
 
+    /**
+     * Intermediates between Open Mode & BaseView
+     * @param x x-coordinate
+     * @param y y-coordinate
+     */
     public void stopDrawing(float x,float y) {
         touch_up();
         invalidate();
