@@ -7,7 +7,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.01"
         android:layout_gravity="center"
         android:clickable="true"/>
 </FrameLayout>
