@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/open_ll"
     android:layout_height="match_parent">
 
-    <TextView
+    <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Not yet implemented"
-        android:id="@+id/textView2"
-        android:gravity="center"
-        android:layout_gravity="center" />
-</LinearLayout>
+        android:alpha="0.01"
+        android:layout_gravity="center"
+        android:clickable="true"/>
+</FrameLayout>

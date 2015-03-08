@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -42,7 +43,7 @@ public class OpenActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_open);
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
@@ -53,12 +54,13 @@ public class OpenActivity extends BaseActivity {
         mPaint.setStrokeWidth(12);
 
         baseView = new BaseView(this, mPaint, false);
-        setContentView(baseView);
+        ((FrameLayout)findViewById(R.id.open_ll)).addView(baseView,0);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
 
 //        initFile(this);
     }
