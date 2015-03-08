@@ -37,6 +37,8 @@ public class BaseView extends View {
     private FileOutputStream fileOutputStream;
     private Long startTime;
     private boolean createMode;
+    private int totalPages = 1;
+    private int currentPage = 1;
 
 
     public BaseView(Context context, AttributeSet attrs) {
@@ -138,8 +140,11 @@ public class BaseView extends View {
             Log.d(TAG,"File not found");
             e.printStackTrace();
         }
+
+
+
         //Subtract startTime from current time to reduce size of data
-        String data = (System.currentTimeMillis() - startTime) + ":" + x + "," + y + ":" + type + "\n" ;
+        String data = (System.currentTimeMillis() - startTime) + ":" + x + "," + y + ":" + type + ":" + currentPage + "\n" ;
         try {
             fileOutputStream.write(data.getBytes());
             fileOutputStream.close();
@@ -269,6 +274,14 @@ public class BaseView extends View {
         mCanvas.drawRect(0, 0, mCanvas.getWidth(), mCanvas.getHeight(), clearPaint);*/
     }
 
+    public void clearCanvasForNextPage(){
+        mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        invalidate();
+
+        startTime = null;
+
+    }
+
 
     /*public void saveToText() {
         try {
@@ -306,5 +319,21 @@ public class BaseView extends View {
     public void stopDrawing(float x,float y) {
         touch_up();
         invalidate();
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
     }
 }

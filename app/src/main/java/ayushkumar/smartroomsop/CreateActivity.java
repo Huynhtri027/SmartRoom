@@ -16,6 +16,8 @@ public class CreateActivity extends BaseActivity {
 
     Paint mPaint;
     BaseView baseView;
+    int totalPages = 1;
+    int currentPage = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +58,21 @@ public class CreateActivity extends BaseActivity {
         switch (id) {
             case R.id.action_clear:
                 baseView.clearCanvas();
-
                 return true;
             case R.id.action_size:
-
-
                 return true;
             case R.id.action_color:
                 baseView.setPaintColor(Color.BLUE);
+                return true;
+            case R.id.action_nextpage:
+                incrementTotalPages();
+                incrementCurrentPage();
+                baseView.clearCanvasForNextPage();
+                return true;
+            case R.id.action_prevpage:
+                if(currentPage > 1){
+                    decrementCurrentPage();
+                }
                 return true;
             /*case R.id.action_savetotext:
                 baseView.saveToText();
@@ -75,5 +84,44 @@ public class CreateActivity extends BaseActivity {
 
     public void onEvent(StartDrawingEvent startDrawingEvent) {
         Toast.makeText(this, "start drawing", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem nextPageMenuItem = menu.findItem(R.id.action_nextpage);
+        MenuItem prevPageMenuItem = menu.findItem(R.id.action_prevpage);
+        /*
+
+        //Enable this if we need previous mode availability in Create mode too.
+        //Changes will have to be made in the rest of the code to bring the desired results too.
+        if(totalPages == 1){
+            prevPageMenuItem.setEnabled(false);
+        }else{
+            prevPageMenuItem.setEnabled(true);
+        }*/
+        prevPageMenuItem.setEnabled(false);
+        prevPageMenuItem.setVisible(false);
+
+        return true;
+    }
+
+    public void incrementTotalPages(){
+        totalPages++;
+        baseView.setTotalPages(baseView.getTotalPages() + 1);
+    }
+
+    public void decrementTotalPages(){
+        totalPages--;
+        baseView.setTotalPages(baseView.getTotalPages() - 1);
+    }
+
+    public void incrementCurrentPage(){
+        currentPage++;
+        baseView.setCurrentPage(baseView.getCurrentPage() + 1);
+    }
+
+    public void decrementCurrentPage(){
+        currentPage--;
+        baseView.setCurrentPage(baseView.getCurrentPage() - 1);
     }
 }
