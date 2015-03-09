@@ -39,6 +39,10 @@ public class OpenActivity extends BaseActivity {
     File file;
     FileInputStream fileInputStream;
     Long lastTime;
+    int currentPage = 1;
+    int totalPages = 1;
+    int currentProcessingPage = 1;
+    Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +58,7 @@ public class OpenActivity extends BaseActivity {
         mPaint.setStrokeWidth(12);
 
         baseView = new BaseView(this, mPaint, false);
-        ((FrameLayout)findViewById(R.id.open_ll)).addView(baseView,0);
+        ((FrameLayout) findViewById(R.id.open_ll)).addView(baseView, 0);
     }
 
     @Override
@@ -88,6 +92,20 @@ public class OpenActivity extends BaseActivity {
                 Log.d(TAG, "Play");
                 playFromTextFile();
                 return true;
+
+            case R.id.action_nextpage:
+                Log.d(TAG, "Next Page");
+                currentPage++;
+                baseView.clearCanvasForNextPage();
+                lastTime = null;
+                return true;
+
+            case R.id.action_prevpage:
+                Log.d(TAG, "Prev Page");
+                baseView.clearCanvasForNextPage();
+                currentPage--;
+                lastTime = null;
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -96,9 +114,19 @@ public class OpenActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_open, menu);
+        this.menu = menu;
         return true;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if(currentPage == 1){
+            menu.findItem(R.id.action_prevpage).setEnabled(false);
+        }else{
+            menu.findItem(R.id.action_prevpage).setEnabled(true);
+        }
+        return true;
+    }
 
     private void playFromTextFile() {
         initFile(this);
@@ -109,29 +137,43 @@ public class OpenActivity extends BaseActivity {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
-
+            Boolean nextPageExists = false;
             while ((line = br.readLine()) != null) {
                 // process the line.
 //                Log.d(TAG, line + " being processed");
                 String type = line.split(":")[2];
-//                Log.d(TAG, "Type " + type);
-                if (type != null) {
-                    String parts[] = line.split(":");
-                    float x = Float.parseFloat(parts[1].split(",")[0]);
-                    float y = Float.parseFloat(parts[1].split(",")[1]);
-                    Long time = Long.parseLong(parts[0]);
-                    if (type.equals("s")) {
-                        EventBus.getDefault().post(new StartDrawingBackgroundEvent(time, y, x));
-                        //startDrawing(line);
-                    } else if (type.equals("m")) {
-                        EventBus.getDefault().post(new ContinueDrawingBackgroundEvent(time, y, x));
-                        //continueDrawing(line);
-                    } else {
-                        EventBus.getDefault().post(new StopDrawingBackgroundEvent(time, y, x));
-                        //stopDrawing(line);
+                currentProcessingPage = Integer.valueOf(line.split(":")[3]);
+                if (currentProcessingPage > currentPage) {
+                    //Next Page exists
+                    nextPageExists = true;
+                    break;
+                } else if (currentPage == currentProcessingPage) {
+//                  Log.d(TAG, "Type " + type);
+                    if (type != null) {
+                        String parts[] = line.split(":");
+                        float x = Float.parseFloat(parts[1].split(",")[0]);
+                        float y = Float.parseFloat(parts[1].split(",")[1]);
+                        Long time = Long.parseLong(parts[0]);
+                        if (type.equals("s")) {
+                            EventBus.getDefault().post(new StartDrawingBackgroundEvent(time, y, x));
+                            //startDrawing(line);
+                        } else if (type.equals("m")) {
+                            EventBus.getDefault().post(new ContinueDrawingBackgroundEvent(time, y, x));
+                            //continueDrawing(line);
+                        } else {
+                            EventBus.getDefault().post(new StopDrawingBackgroundEvent(time, y, x));
+                            //stopDrawing(line);
+                        }
                     }
                 }
             }
+
+            if(!nextPageExists){
+                menu.findItem(R.id.action_nextpage).setEnabled(false);
+            }else {
+                menu.findItem(R.id.action_nextpage).setEnabled(true);
+            }
+
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -182,7 +224,6 @@ public class OpenActivity extends BaseActivity {
         baseView.startDrawing(x, y);
         Log.d(TAG, "Start drawing at " + x + "," + y);
     }*/
-
 
 
     public void onEventBackgroundThread(StopDrawingBackgroundEvent stopDrawingBackgroundEvent) {
