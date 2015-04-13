@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import ayushkumar.smartroomsop.model.InputModel;
 import ayushkumar.smartroomsop.util.Constants;
@@ -37,12 +38,15 @@ public class BaseView extends View {
     private Paint mBitmapPaint;
     private Paint mPaint;
     private File file;
+    private File infoFile;
     private FileOutputStream fileOutputStream;
+    private FileOutputStream infoFileOutputStream;
     private Long startTime;
     private boolean createMode;
     private int totalPages = 1;
     private int currentPage = 1;
-
+    private ArrayList<InputModel> buffer;
+    Gson gson;
 
     public BaseView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -52,6 +56,9 @@ public class BaseView extends View {
         super(context);
         mPath = new Path();
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
+
+        buffer = new ArrayList<>();
+        gson = new Gson();
     }
 
     public BaseView(Context context, Paint mPaint){
@@ -95,8 +102,10 @@ public class BaseView extends View {
         if (check) {
             file = new File(context.getExternalFilesDir(null)
                     + File.separator + (Constants.filename));
+            infoFile = new File(context.getExternalFilesDir(null) + File.separator + (Constants.infofile));
             try {
                 fileOutputStream = new FileOutputStream(file);
+                infoFileOutputStream = new FileOutputStream((infoFile));
             } catch (FileNotFoundException e) {
                 Log.d(TAG,"File not found");
                 e.printStackTrace();
@@ -161,25 +170,11 @@ public class BaseView extends View {
      * @param type 's' for Start, 'm' for Move, 'e' for End
      */
     private void storeValuesAsJSON(float x, float y, char type) {
-        try {
-            fileOutputStream = new FileOutputStream(file,true);
-        } catch (FileNotFoundException e) {
-            Log.d(TAG,"File not found");
-            e.printStackTrace();
-        }
-
 
         //Subtract startTime from current time to reduce size of data
         InputModel inputModel = new InputModel(currentPage,type,x,y,System.currentTimeMillis() - startTime);
-        Gson gson = new Gson();
-        String data = gson.toJson(inputModel) + "\n";
-        try {
+        buffer.add(inputModel);
 
-            fileOutputStream.write(data.getBytes());
-            fileOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -200,7 +195,7 @@ public class BaseView extends View {
 
         //Store these coordinates
         if(createMode){
-            storeValuesAsJSON(x,y,'s');
+            storeValuesAsJSON(x, y, 's');
         }
 
         //Log.d(TAG,"Touch_start : " + x + ","+ y + "  " + mX + "," + mY);
@@ -229,7 +224,7 @@ public class BaseView extends View {
 
             //Store these coordinates
             if(createMode){
-                storeValuesAsJSON(x,y,'m');
+                storeValuesAsJSON(x, y, 'm');
             }
         }
     }
@@ -242,7 +237,7 @@ public class BaseView extends View {
 
         //Store coordinates
         if(createMode){
-            storeValuesAsJSON(mX,mY,'e');
+            storeValuesAsJSON(mX, mY, 'e');
         }
 
         Log.d(TAG,"Touch_end : "+ mX + "," + mY);
@@ -360,5 +355,37 @@ public class BaseView extends View {
 
     public void setTotalPages(int totalPages) {
         this.totalPages = totalPages;
+    }
+
+    public void saveData() {
+
+        //TODO: Display ProgressBar for saving data. (Start an IntentService maybe?)
+
+        try {
+            fileOutputStream = new FileOutputStream(file,true);
+            infoFileOutputStream = new FileOutputStream(infoFile, false);
+        } catch (FileNotFoundException e) {
+            Log.d(TAG,"File not found");
+            e.printStackTrace();
+        }
+        for(InputModel model: buffer){
+            String data = gson.toJson(model) + "\n";
+            try {
+
+                fileOutputStream.write(data.getBytes());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            fileOutputStream.close();
+            infoFileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        buffer.clear();
     }
 }

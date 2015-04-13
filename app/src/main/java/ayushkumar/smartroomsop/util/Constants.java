@@ -7,4 +7,5 @@ public class Constants {
 
     public static final String filename = "data.bin";
 
+    public static String infofile = "info.bin";
 }
