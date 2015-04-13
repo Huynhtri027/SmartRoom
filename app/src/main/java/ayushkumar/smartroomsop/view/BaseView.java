@@ -14,11 +14,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import ayushkumar.smartroomsop.model.InputModel;
 import ayushkumar.smartroomsop.util.Constants;
 
 /**
@@ -141,11 +144,37 @@ public class BaseView extends View {
             e.printStackTrace();
         }
 
-
-
         //Subtract startTime from current time to reduce size of data
         String data = (System.currentTimeMillis() - startTime) + ":" + x + "," + y + ":" + type + ":" + currentPage + "\n" ;
         try {
+            fileOutputStream.write(data.getBytes());
+            fileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Store coordinates in file using JSON format
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param type 's' for Start, 'm' for Move, 'e' for End
+     */
+    private void storeValuesAsJSON(float x, float y, char type) {
+        try {
+            fileOutputStream = new FileOutputStream(file,true);
+        } catch (FileNotFoundException e) {
+            Log.d(TAG,"File not found");
+            e.printStackTrace();
+        }
+
+
+        //Subtract startTime from current time to reduce size of data
+        InputModel inputModel = new InputModel(currentPage,type,x,y,System.currentTimeMillis() - startTime);
+        Gson gson = new Gson();
+        String data = gson.toJson(inputModel) + "\n";
+        try {
+
             fileOutputStream.write(data.getBytes());
             fileOutputStream.close();
         } catch (IOException e) {
@@ -171,7 +200,7 @@ public class BaseView extends View {
 
         //Store these coordinates
         if(createMode){
-            storeValues(x,y,'s');
+            storeValuesAsJSON(x,y,'s');
         }
 
         //Log.d(TAG,"Touch_start : " + x + ","+ y + "  " + mX + "," + mY);
@@ -200,7 +229,7 @@ public class BaseView extends View {
 
             //Store these coordinates
             if(createMode){
-                storeValues(x,y,'m');
+                storeValuesAsJSON(x,y,'m');
             }
         }
     }
@@ -211,13 +240,9 @@ public class BaseView extends View {
     private void touch_up() {
         mPath.lineTo(mX, mY);
 
-       /* //End storing
-        Log.d(TAG, "Time: " + System.currentTimeMillis() + ", Coordinates: (" + mX + "," + mY + ")" );
-        storeValues(mX,mY);*/
-
         //Store coordinates
         if(createMode){
-            storeValues(mX,mY,'e');
+            storeValuesAsJSON(mX,mY,'e');
         }
 
         Log.d(TAG,"Touch_end : "+ mX + "," + mY);
