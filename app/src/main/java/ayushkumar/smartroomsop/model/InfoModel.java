@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Ayush on 13-04-15.
  */
-public class HeaderModel {
+public class InfoModel {
     @SerializedName("tpg") private int totalPages;
     @SerializedName("tt") private Long totalTime;
 
@@ -25,7 +25,7 @@ public class HeaderModel {
         this.totalTime = totalTime;
     }
 
-    public HeaderModel(int totalPages, Long totalTime) {
+    public InfoModel(int totalPages, Long totalTime) {
 
         this.totalPages = totalPages;
         this.totalTime = totalTime;
