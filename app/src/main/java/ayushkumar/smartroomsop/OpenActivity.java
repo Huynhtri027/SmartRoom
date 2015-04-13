@@ -43,6 +43,7 @@ public class OpenActivity extends BaseActivity {
     int totalPages = 1;
     int currentProcessingPage = 1;
     Menu menu;
+    private Boolean animationPlaying = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +97,7 @@ public class OpenActivity extends BaseActivity {
             case R.id.action_nextpage:
                 Log.d(TAG, "Next Page");
                 currentPage++;
+                totalPages++;
                 baseView.clearCanvasForNextPage();
                 lastTime = null;
                 return true;
@@ -120,10 +122,26 @@ public class OpenActivity extends BaseActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if(currentPage == 1){
-            menu.findItem(R.id.action_prevpage).setEnabled(false);
+        MenuItem nextPageMenuItem = menu.findItem(R.id.action_nextpage);
+        MenuItem prevPageMenuItem = menu.findItem(R.id.action_prevpage);
+
+        if(getAnimationPlaying()){
+            nextPageMenuItem.setEnabled(false);
+            prevPageMenuItem.setEnabled(false);
+            return true;
         }else{
-            menu.findItem(R.id.action_prevpage).setEnabled(true);
+            //nextPageMenuItem.setEnabled(true);
+            if((currentPage < totalPages)|| (currentPage == 1)){
+                nextPageMenuItem.setEnabled(true);
+            }else{
+                //nextPageMenuItem.setEnabled(false);
+
+            }
+            if(currentPage == 1){
+                prevPageMenuItem.setEnabled(false);
+            }else{
+                prevPageMenuItem.setEnabled(true);
+            }
         }
         return true;
     }
@@ -171,7 +189,9 @@ public class OpenActivity extends BaseActivity {
             if(!nextPageExists){
                 menu.findItem(R.id.action_nextpage).setEnabled(false);
             }else {
-                menu.findItem(R.id.action_nextpage).setEnabled(true);
+                if(!getAnimationPlaying()){
+                    menu.findItem(R.id.action_nextpage).setEnabled(true);
+                }
             }
 
             br.close();
@@ -237,6 +257,7 @@ public class OpenActivity extends BaseActivity {
     }
 
     public void onEventMainThread(StopDrawingEvent stopDrawingEvent) {
+        setAnimationPlaying(false);
         baseView.stopDrawing(stopDrawingEvent.getX(), stopDrawingEvent.getY());
     }
 
@@ -252,12 +273,14 @@ public class OpenActivity extends BaseActivity {
     }
 
     public void onEventMainThread(ContinueDrawingEvent continueDrawingEvent) {
+        setAnimationPlaying(true);
         baseView.continueDrawing(continueDrawingEvent.getX(), continueDrawingEvent.getY());
     }
 
     public void onEventBackgroundThread(StartDrawingBackgroundEvent startDrawingBackgroundEvent) {
         if (lastTime == null) {
             lastTime = 0L;
+
         }
         //Sleep for a specific period
         try {
@@ -272,6 +295,7 @@ public class OpenActivity extends BaseActivity {
     }
 
     public void onEventMainThread(StartDrawingEvent startDrawingEvent) {
+        setAnimationPlaying(true);
         baseView.startDrawing(startDrawingEvent.getX(), startDrawingEvent.getY());
         Log.d(TAG, "Start drawing at " + startDrawingEvent.getX() + "," + startDrawingEvent.getY());
     }
@@ -311,5 +335,13 @@ public class OpenActivity extends BaseActivity {
             Toast.makeText(context, "Can't access SD Card.", Toast.LENGTH_LONG).show();
             Log.i(TAG, "Mem card not available?");
         }
+    }
+
+    public Boolean getAnimationPlaying() {
+        return animationPlaying;
+    }
+
+    public void setAnimationPlaying(Boolean animationPlaying) {
+        this.animationPlaying = animationPlaying;
     }
 }
