@@ -9,6 +9,10 @@ public class InfoModel {
     @SerializedName("tpg") private int totalPages;
     @SerializedName("tt") private Long totalTime;
 
+    public InfoModel(int totalPages) {
+        this.totalPages = totalPages;
+    }
+
     public int getTotalPages() {
         return totalPages;
     }
