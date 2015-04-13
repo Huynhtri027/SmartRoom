@@ -1,15 +1,21 @@
 package ayushkumar.smartroomsop;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import ayushkumar.smartroomsop.events.StartDrawingEvent;
@@ -19,12 +25,14 @@ import ayushkumar.smartroomsop.util.Constants;
 /**
  * Created by Ayush on 22-01-15.
  */
-public class ReadTextActivity extends BaseActivity {
+public class ReadTextActivity extends ActionBarActivity {
 
     private File file;
-//    private FileOutputStream fileOutputStream;
+    private File infoFile;
     private FileInputStream fileInputStream;
+    private FileInputStream infoFileInputStream;
     private static final String TAG = "ReadTextActivity";
+    private TextView textView;
 
 
     @Override
@@ -33,17 +41,46 @@ public class ReadTextActivity extends BaseActivity {
         setContentView(R.layout.activity_readtext);
 
         initFile(this);
-        String text = readFile(file);
-        TextView textView = (TextView) findViewById(R.id.readtext_tv);
+        String text = readFile(file,fileInputStream);
+        textView = (TextView) findViewById(R.id.readtext_tv);
         textView.setText(text);
     }
 
-    private String readFile(File file){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_read, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        initFile(this);
+
+        switch (id) {
+
+            case R.id.action_data:
+                textView.setText(readFile(file,fileInputStream));
+                return true;
+            case R.id.action_info:
+                textView.setText(readFile(infoFile,infoFileInputStream));
+                return true;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private String readFile(File file, FileInputStream fileInputStream){
         int length = (int) file.length();
         byte[] bytes = new byte[length];
 
         try {
-            fileInputStream.read(bytes);
+            int read = fileInputStream.read(bytes);
+            Log.d("ReadTextActivity","Bytes read : " + read + "");
             fileInputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -70,8 +107,11 @@ public class ReadTextActivity extends BaseActivity {
         if (check) {
             file = new File(context.getExternalFilesDir(null)
                     + File.separator + (Constants.filename));
+            infoFile = new File(context.getExternalFilesDir(null) + File.separator + (Constants.infofile));
+
             try {
                 fileInputStream = new FileInputStream(file);
+                infoFileInputStream = new FileInputStream((infoFile));
             } catch (FileNotFoundException e) {
                 Log.d(TAG, "File not found");
                 e.printStackTrace();
@@ -82,8 +122,4 @@ public class ReadTextActivity extends BaseActivity {
         }
     }
 
-    public void onEvent(StartDrawingEvent startDrawingEvent){
-        //TODO Remove
-        Toast.makeText(this, "Start Drawing", Toast.LENGTH_SHORT).show();
-    }
 }
