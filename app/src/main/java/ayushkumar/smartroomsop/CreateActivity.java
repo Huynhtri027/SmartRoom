@@ -124,4 +124,21 @@ public class CreateActivity extends BaseActivity {
         currentPage--;
         baseView.setCurrentPage(baseView.getCurrentPage() - 1);
     }
+
+    @Override
+    public void onBackPressed() {
+        saveData();
+        super.onBackPressed();
+
+    }
+
+    @Override
+    protected void onPause() {
+        saveData();
+        super.onPause();
+    }
+
+    private void saveData() {
+        baseView.saveData();
+    }
 }

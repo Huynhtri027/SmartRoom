@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import ayushkumar.smartroomsop.model.InfoModel;
 import ayushkumar.smartroomsop.model.InputModel;
 import ayushkumar.smartroomsop.util.Constants;
 
@@ -368,6 +369,16 @@ public class BaseView extends View {
             Log.d(TAG,"File not found");
             e.printStackTrace();
         }
+
+        InfoModel infoModel = new InfoModel(getTotalPages());
+        String info = gson.toJson(infoModel);
+        try {
+            infoFileOutputStream.write(info.getBytes());
+            infoFileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         for(InputModel model: buffer){
             String data = gson.toJson(model) + "\n";
             try {
