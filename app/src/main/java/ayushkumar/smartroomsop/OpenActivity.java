@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +25,8 @@ import ayushkumar.smartroomsop.events.StartDrawingBackgroundEvent;
 import ayushkumar.smartroomsop.events.StartDrawingEvent;
 import ayushkumar.smartroomsop.events.StopDrawingBackgroundEvent;
 import ayushkumar.smartroomsop.events.StopDrawingEvent;
+import ayushkumar.smartroomsop.model.InfoModel;
+import ayushkumar.smartroomsop.model.InputModel;
 import ayushkumar.smartroomsop.util.BaseActivity;
 import ayushkumar.smartroomsop.util.Constants;
 import ayushkumar.smartroomsop.view.BaseView;
@@ -37,7 +41,9 @@ public class OpenActivity extends BaseActivity {
     Paint mPaint;
     BaseView baseView;
     File file;
+    File infoFile;
     FileInputStream fileInputStream;
+    FileInputStream infoFileInputStream;
     Long lastTime;
     int currentPage = 1;
     int totalPages = 1;
@@ -91,13 +97,13 @@ public class OpenActivity extends BaseActivity {
         switch (id) {
             case R.id.action_play:
                 Log.d(TAG, "Play");
-                playFromTextFile();
+                playFromJsonFile();
                 return true;
 
             case R.id.action_nextpage:
                 Log.d(TAG, "Next Page");
                 currentPage++;
-                totalPages++;
+//                totalPages++;
                 baseView.clearCanvasForNextPage();
                 lastTime = null;
                 return true;
@@ -131,11 +137,10 @@ public class OpenActivity extends BaseActivity {
             return true;
         }else{
             //nextPageMenuItem.setEnabled(true);
-            if((currentPage < totalPages)|| (currentPage == 1)){
+            if((currentPage < totalPages)){
                 nextPageMenuItem.setEnabled(true);
-            }else{
-                //nextPageMenuItem.setEnabled(false);
-
+            }else if(currentPage == totalPages){
+                nextPageMenuItem.setEnabled(false);
             }
             if(currentPage == 1){
                 prevPageMenuItem.setEnabled(false);
@@ -144,6 +149,45 @@ public class OpenActivity extends BaseActivity {
             }
         }
         return true;
+    }
+
+    private void playFromJsonFile(){
+        initFile(this);
+        Gson gson = new Gson();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(infoFile));
+            String line = br.readLine();
+            InfoModel infoModel = gson.fromJson(line,InfoModel.class);
+            totalPages = infoModel.getTotalPages();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }catch (IOException i) {
+            i.printStackTrace();
+        } finally {
+        }
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            String line;
+            while(((line = bufferedReader.readLine()) != null)){
+                InputModel inputModel = gson.fromJson(line,InputModel.class);
+                if(inputModel.getPageNumber() == currentPage){
+                    switch (inputModel.getType()){
+                        case 's':
+                            EventBus.getDefault().post(new StartDrawingBackgroundEvent(inputModel.getTime(), inputModel.getY(), inputModel.getX()));
+                            break;
+                        case 'm':
+                            EventBus.getDefault().post(new ContinueDrawingBackgroundEvent(inputModel.getTime(), inputModel.getY(), inputModel.getX()));
+                            break;
+                        case 'e':
+                            EventBus.getDefault().post(new StopDrawingBackgroundEvent(inputModel.getTime(), inputModel.getY(), inputModel.getX()));
+                            break;
+                    }
+                }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void playFromTextFile() {
@@ -320,13 +364,15 @@ public class OpenActivity extends BaseActivity {
         if (check) {
             file = new File(context.getExternalFilesDir(null)
                     + File.separator + (Constants.filename));
-            if (file.exists()) {
-                Log.d(TAG, "File exists");
+            infoFile = new File(context.getExternalFilesDir(null) + File.separator + (Constants.infofile));
+            if (file.exists() && infoFile.exists()) {
+                Log.d(TAG, "Files exist");
             } else {
-                Log.d(TAG, "File doesn't exist");
+                Log.d(TAG, "One or more Files don't exist");
             }
             try {
                 fileInputStream = new FileInputStream(file);
+                infoFileInputStream = new FileInputStream(infoFile);
             } catch (FileNotFoundException e) {
                 Log.d(TAG, "File not found");
                 e.printStackTrace();
