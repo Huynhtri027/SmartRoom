@@ -40,4 +40,13 @@
         android:layout_marginTop="25dp"
         />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Record Audio"
+        android:id="@+id/button4"
+        android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        />
+
 </LinearLayout>

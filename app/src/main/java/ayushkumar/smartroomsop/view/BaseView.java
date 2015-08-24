@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import ayushkumar.smartroomsop.interfaces.AudioRecordListener;
 import ayushkumar.smartroomsop.model.InfoModel;
 import ayushkumar.smartroomsop.model.InputModel;
 import ayushkumar.smartroomsop.util.Constants;
@@ -48,6 +49,8 @@ public class BaseView extends View {
     private int currentPage = 1;
     private ArrayList<InputModel> buffer;
     Gson gson;
+
+    AudioRecordListener audioRecordListener;
 
     public BaseView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -80,6 +83,15 @@ public class BaseView extends View {
             initFile(context);
         }
     }
+
+    public AudioRecordListener getAudioRecordListener() {
+        return audioRecordListener;
+    }
+
+    public void setAudioRecordListener(AudioRecordListener audioRecordListener) {
+        this.audioRecordListener = audioRecordListener;
+    }
+
 
     /**
      * Initialize File object
@@ -192,6 +204,12 @@ public class BaseView extends View {
         //TODO Find better way to approach this(As this has to be taken care of in other functions manually, eg clearCanvas)
         if(startTime == null){
             startTime = System.currentTimeMillis();
+
+            //Start recording audio
+            //Send this signal to the activity
+            audioRecordListener.startRecording();
+            Log.d(TAG, "Sending signal to start recording audio");
+
         }
 
         //Store these coordinates

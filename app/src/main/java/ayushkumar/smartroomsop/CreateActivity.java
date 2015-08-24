@@ -2,22 +2,33 @@ package ayushkumar.smartroomsop;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
+
 import ayushkumar.smartroomsop.events.StartDrawingEvent;
+import ayushkumar.smartroomsop.interfaces.AudioRecordListener;
 import ayushkumar.smartroomsop.util.BaseActivity;
+import ayushkumar.smartroomsop.util.Constants;
 import ayushkumar.smartroomsop.view.BaseView;
 
 
-public class CreateActivity extends BaseActivity {
+public class CreateActivity extends BaseActivity implements AudioRecordListener {
 
     Paint mPaint;
     BaseView baseView;
     int totalPages = 1;
     int currentPage = 1;
+
+    private static final String TAG = "CreateActivity";
+    MediaRecorder mRecorder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +44,7 @@ public class CreateActivity extends BaseActivity {
         mPaint.setStrokeWidth(12);
 
         baseView = new BaseView(this, mPaint, true);
+        baseView.setAudioRecordListener(this);
         setContentView(baseView);
 
     }
@@ -128,6 +140,8 @@ public class CreateActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         saveData();
+        stopRecording();
+
         super.onBackPressed();
 
     }
@@ -135,7 +149,45 @@ public class CreateActivity extends BaseActivity {
     @Override
     protected void onPause() {
         saveData();
+        stopRecording();
         super.onPause();
+    }
+
+    @Override
+    public void startRecording() {
+        Log.d(TAG, "Received signal to start rec");
+        if(mRecorder == null){
+            Log.d(TAG, "mRecorder null");
+            mRecorder = new MediaRecorder();
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            String audioFile = Environment.getExternalStorageDirectory().getAbsolutePath()
+                    + File.separator + (Constants.audioFile);
+            mRecorder.setOutputFile(audioFile);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+            try {
+                mRecorder.prepare();
+            } catch (IOException e) {
+                Log.e(TAG, "prepare() failed");
+            }
+
+            mRecorder.start();
+        }
+
+    }
+
+    @Override
+    public void stopRecording() {
+        Log.d(TAG,"Stopping recording if mRecorder is not null");
+        if(mRecorder != null){
+            Log.d(TAG, "mRecorder not null so stop rec.");
+            mRecorder.stop();
+            mRecorder.release();
+            mRecorder = null;
+        }
+
+
     }
 
     private void saveData() {

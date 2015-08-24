@@ -3,6 +3,7 @@
     package="ayushkumar.smartroomsop" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:allowBackup="true"
@@ -33,6 +34,10 @@
         <activity
             android:name=".util.BaseActivity"
             android:label="@string/title_activity_base" >
+        </activity>
+        <activity
+            android:name=".AudioActivity"
+            android:label="@string/title_activity_audio" >
         </activity>
     </application>
 

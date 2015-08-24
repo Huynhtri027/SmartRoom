@@ -3,14 +3,14 @@ package ayushkumar.smartroomsop;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
 /**
  * Created by Ayush on 22-01-15.
  */
-public class MainActivity extends ActionBarActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,10 +20,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         Button create = (Button) findViewById(R.id.button);
         Button open = (Button) findViewById(R.id.button2);
         Button read = (Button) findViewById(R.id.button3);
+        Button record = (Button) findViewById(R.id.button4);
 
         create.setOnClickListener(this);
         open.setOnClickListener(this);
         read.setOnClickListener(this);
+        record.setOnClickListener(this);
     }
 
     @Override
@@ -42,6 +44,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             case R.id.button3:
                 Intent intent3 = new Intent(this, ReadTextActivity.class);
                 startActivity(intent3);
+                return;
+
+            case R.id.button4:
+                Intent intent4 = new Intent(this, AudioActivity.class);
+                startActivity(intent4);
                 return;
         }
     }
