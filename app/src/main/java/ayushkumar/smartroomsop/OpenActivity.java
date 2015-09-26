@@ -2,6 +2,7 @@ package ayushkumar.smartroomsop;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -25,6 +26,7 @@ import ayushkumar.smartroomsop.events.StartDrawingBackgroundEvent;
 import ayushkumar.smartroomsop.events.StartDrawingEvent;
 import ayushkumar.smartroomsop.events.StopDrawingBackgroundEvent;
 import ayushkumar.smartroomsop.events.StopDrawingEvent;
+import ayushkumar.smartroomsop.interfaces.AudioRecordListener;
 import ayushkumar.smartroomsop.model.InfoModel;
 import ayushkumar.smartroomsop.model.InputModel;
 import ayushkumar.smartroomsop.util.BaseActivity;
@@ -35,9 +37,9 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by Ayush on 22-01-15.
  */
-public class OpenActivity extends BaseActivity {
+public class OpenActivity extends BaseActivity implements AudioRecordListener{
 
-    private static final String TAG = "OpenActvity";
+    private static final String TAG = "OpenActivity";
     Paint mPaint;
     BaseView baseView;
     File file;
@@ -50,6 +52,7 @@ public class OpenActivity extends BaseActivity {
     int currentProcessingPage = 1;
     Menu menu;
     private Boolean animationPlaying = false;
+    MediaPlayer mPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +83,8 @@ public class OpenActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
 
+        stopPlaying();
+
         if (fileInputStream != null) {
             try {
                 fileInputStream.close();
@@ -98,6 +103,7 @@ public class OpenActivity extends BaseActivity {
             case R.id.action_play:
                 Log.d(TAG, "Play");
                 playFromJsonFile();
+                startPlaying();     //Start playing audio
                 return true;
 
             case R.id.action_nextpage:
@@ -166,6 +172,7 @@ public class OpenActivity extends BaseActivity {
         } finally {
         }
         try {
+            Log.d(TAG, "Current page : " + currentPage + ", Total pages : " + totalPages);
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
             String line;
             while(((line = bufferedReader.readLine()) != null)){
@@ -173,12 +180,15 @@ public class OpenActivity extends BaseActivity {
                 if(inputModel.getPageNumber() == currentPage){
                     switch (inputModel.getType()){
                         case 's':
+                            Log.d(TAG, "Posting start background event.");
                             EventBus.getDefault().post(new StartDrawingBackgroundEvent(inputModel.getTime(), inputModel.getY(), inputModel.getX()));
                             break;
                         case 'm':
+                            //Log.d(TAG, "Posting middle background event.");
                             EventBus.getDefault().post(new ContinueDrawingBackgroundEvent(inputModel.getTime(), inputModel.getY(), inputModel.getX()));
                             break;
                         case 'e':
+                            Log.d(TAG, "Posting end background event.");
                             EventBus.getDefault().post(new StopDrawingBackgroundEvent(inputModel.getTime(), inputModel.getY(), inputModel.getX()));
                             break;
                     }
@@ -190,11 +200,11 @@ public class OpenActivity extends BaseActivity {
         }
     }
 
-    private void playFromTextFile() {
+    /*private void playFromTextFile() {
         initFile(this);
-        /*Log.d(TAG,file.getAbsolutePath());
+        *//*Log.d(TAG,file.getAbsolutePath());
         Log.d(TAG,file.toString());
-        Log.d(TAG,"Length : "+file.length()+"");*/
+        Log.d(TAG,"Length : "+file.length()+"");*//*
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -242,7 +252,7 @@ public class OpenActivity extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
    /* private void stopDrawing(String line) {
         String parts[] = line.split(":");
@@ -334,6 +344,7 @@ public class OpenActivity extends BaseActivity {
         }
 
         lastTime = startDrawingBackgroundEvent.getTime();
+        Log.d(TAG, "Posting start drawing event from BackgroundThread");
         EventBus.getDefault().post(new StartDrawingEvent(startDrawingBackgroundEvent));
 
     }
@@ -389,5 +400,37 @@ public class OpenActivity extends BaseActivity {
 
     public void setAnimationPlaying(Boolean animationPlaying) {
         this.animationPlaying = animationPlaying;
+    }
+
+    @Override
+    public void startRecording() throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("Recording audio not supported in Open Mode");
+    }
+
+    @Override
+    public void stopRecording() throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("Recording audio not supported in Open Mode");
+    }
+
+    @Override
+    public void startPlaying() throws UnsupportedOperationException {
+        mPlayer = new MediaPlayer();
+        String audioFile = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator + (Constants.audioFile);
+        try {
+            mPlayer.setDataSource(audioFile);
+            mPlayer.prepare();
+            mPlayer.start();
+        } catch (IOException e) {
+            Log.e(TAG, "prepare() failed");
+        }
+    }
+
+    @Override
+    public void stopPlaying() throws UnsupportedOperationException {
+        if(mPlayer != null){
+            mPlayer.release();
+            mPlayer = null;
+        }
     }
 }

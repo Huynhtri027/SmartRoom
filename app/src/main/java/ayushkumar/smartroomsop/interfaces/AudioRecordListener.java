@@ -5,9 +5,12 @@ package ayushkumar.smartroomsop.interfaces;
  */
 public interface AudioRecordListener  {
 
-    void startRecording();
+    void startRecording() throws UnsupportedOperationException;
 
-    void stopRecording();
+    void stopRecording() throws UnsupportedOperationException;
 
+    void startPlaying() throws UnsupportedOperationException;
+
+    void stopPlaying() throws UnsupportedOperationException;
 }
 

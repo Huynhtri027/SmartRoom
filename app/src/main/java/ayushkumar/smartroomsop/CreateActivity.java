@@ -190,6 +190,16 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener 
 
     }
 
+    @Override
+    public void startPlaying() throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("Playing audio not supported in Create Mode");
+    }
+
+    @Override
+    public void stopPlaying() throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("Playing audio not supported in Create Mode");
+    }
+
     private void saveData() {
         baseView.saveData();
     }

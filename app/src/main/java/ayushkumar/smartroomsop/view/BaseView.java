@@ -207,7 +207,9 @@ public class BaseView extends View {
 
             //Start recording audio
             //Send this signal to the activity
-            audioRecordListener.startRecording();
+            if(createMode){
+                audioRecordListener.startRecording();
+            }
             Log.d(TAG, "Sending signal to start recording audio");
 
         }
