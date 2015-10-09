@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
@@ -19,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 
 import ayushkumar.smartroomsop.events.ContinueDrawingBackgroundEvent;
 import ayushkumar.smartroomsop.events.ContinueDrawingEvent;
@@ -29,6 +31,7 @@ import ayushkumar.smartroomsop.events.StopDrawingEvent;
 import ayushkumar.smartroomsop.interfaces.AudioRecordListener;
 import ayushkumar.smartroomsop.model.InfoModel;
 import ayushkumar.smartroomsop.model.InputModel;
+import ayushkumar.smartroomsop.model.PageEndTimesModel;
 import ayushkumar.smartroomsop.util.BaseActivity;
 import ayushkumar.smartroomsop.util.Constants;
 import ayushkumar.smartroomsop.view.BaseView;
@@ -102,6 +105,8 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener{
         switch (id) {
             case R.id.action_play:
                 Log.d(TAG, "Play");
+                baseView.clearCanvasForNextPage();
+                lastTime = null;
                 playFromJsonFile();
                 startPlaying();     //Start playing audio
                 return true;
@@ -136,13 +141,16 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener{
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem nextPageMenuItem = menu.findItem(R.id.action_nextpage);
         MenuItem prevPageMenuItem = menu.findItem(R.id.action_prevpage);
+        MenuItem playMenuItem = menu.findItem(R.id.action_play);
 
         if(getAnimationPlaying()){
             nextPageMenuItem.setEnabled(false);
             prevPageMenuItem.setEnabled(false);
+            playMenuItem.setEnabled(false);
             return true;
         }else{
             //nextPageMenuItem.setEnabled(true);
+            playMenuItem.setEnabled(true);
             if((currentPage < totalPages)){
                 nextPageMenuItem.setEnabled(true);
             }else if(currentPage == totalPages){
@@ -165,6 +173,12 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener{
             String line = br.readLine();
             InfoModel infoModel = gson.fromJson(line,InfoModel.class);
             totalPages = infoModel.getTotalPages();
+
+            line = br.readLine();
+            PageEndTimesModel pageEndTimesModel = gson.fromJson(line, PageEndTimesModel.class);
+            baseView.setEndTimesForPages(pageEndTimesModel.getEndTimesForPage());
+
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }catch (IOException i) {
@@ -199,106 +213,6 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener{
             e.printStackTrace();
         }
     }
-
-    /*private void playFromTextFile() {
-        initFile(this);
-        *//*Log.d(TAG,file.getAbsolutePath());
-        Log.d(TAG,file.toString());
-        Log.d(TAG,"Length : "+file.length()+"");*//*
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            Boolean nextPageExists = false;
-            while ((line = br.readLine()) != null) {
-                // process the line.
-//                Log.d(TAG, line + " being processed");
-                String type = line.split(":")[2];
-                currentProcessingPage = Integer.valueOf(line.split(":")[3]);
-                if (currentProcessingPage > currentPage) {
-                    //Next Page exists
-                    nextPageExists = true;
-                    break;
-                } else if (currentPage == currentProcessingPage) {
-//                  Log.d(TAG, "Type " + type);
-                    if (type != null) {
-                        String parts[] = line.split(":");
-                        float x = Float.parseFloat(parts[1].split(",")[0]);
-                        float y = Float.parseFloat(parts[1].split(",")[1]);
-                        Long time = Long.parseLong(parts[0]);
-                        if (type.equals("s")) {
-                            EventBus.getDefault().post(new StartDrawingBackgroundEvent(time, y, x));
-                            //startDrawing(line);
-                        } else if (type.equals("m")) {
-                            EventBus.getDefault().post(new ContinueDrawingBackgroundEvent(time, y, x));
-                            //continueDrawing(line);
-                        } else {
-                            EventBus.getDefault().post(new StopDrawingBackgroundEvent(time, y, x));
-                            //stopDrawing(line);
-                        }
-                    }
-                }
-            }
-
-            if(!nextPageExists){
-                menu.findItem(R.id.action_nextpage).setEnabled(false);
-            }else {
-                if(!getAnimationPlaying()){
-                    menu.findItem(R.id.action_nextpage).setEnabled(true);
-                }
-            }
-
-            br.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
-
-   /* private void stopDrawing(String line) {
-        String parts[] = line.split(":");
-        float x = Float.parseFloat(parts[1].split(",")[0]);
-        float y = Float.parseFloat(parts[1].split(",")[1]);
-
-        baseView.stopDrawing(x, y);
-        Log.d(TAG, "Stop drawing at " + x + "," + y);
-
-    }*/
-
-    /*private void continueDrawing(String line) {
-        String parts[] = line.split(":");
-        float x = Float.parseFloat(parts[1].split(",")[0]);
-        float y = Float.parseFloat(parts[1].split(",")[1]);
-
-        Long time = Long.parseLong(parts[0]);
-        try {
-            Thread.sleep(time - lastTime);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        lastTime = time;
-        baseView.continueDrawing(x, y);
-        Log.d(TAG, "Continue drawing at " + x + "," + y);
-
-    }*/
-
-    /*private void startDrawing(String line) {
-        String parts[] = line.split(":");
-        float x = Float.parseFloat(parts[1].split(",")[0]);
-        float y = Float.parseFloat(parts[1].split(",")[1]);
-        if (lastTime == null) {
-            lastTime = 0L;
-        }
-        Long time = Long.parseLong(parts[0]);
-        try {
-            Thread.sleep(time - lastTime);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        lastTime = time;
-        baseView.startDrawing(x, y);
-        Log.d(TAG, "Start drawing at " + x + "," + y);
-    }*/
-
 
     public void onEventBackgroundThread(StopDrawingBackgroundEvent stopDrawingBackgroundEvent) {
         //Sleep for a specific period
@@ -370,8 +284,6 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener{
             // to know is we can neither read nor write
             check = false;
         }
-//        Log.d(TAG, "CHECK value " + check);
-
         if (check) {
             file = new File(context.getExternalFilesDir(null)
                     + File.separator + (Constants.filename));
@@ -414,16 +326,48 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener{
 
     @Override
     public void startPlaying() throws UnsupportedOperationException {
+
+        // If audio is already playing, then stop.
+        if(mPlayer != null && mPlayer.isPlaying()){
+            mPlayer.stop();
+            mPlayer = null;
+        }
+
         mPlayer = new MediaPlayer();
         String audioFile = Environment.getExternalStorageDirectory().getAbsolutePath()
                 + File.separator + (Constants.audioFile);
         try {
             mPlayer.setDataSource(audioFile);
             mPlayer.prepare();
+            if(currentPage != 1){
+                int seek = (int)(long)baseView.getEndTimesForPages().get(currentPage - 1);
+                Log.d(TAG, "Seeking to " + seek);
+                mPlayer.seekTo(seek);
+            }
+            Log.d(TAG, "Starting from : " + mPlayer.getCurrentPosition()+ ", Total duration: " + mPlayer.getDuration());
             mPlayer.start();
         } catch (IOException e) {
             Log.e(TAG, "prepare() failed");
         }
+
+        Long endTimeForPage = baseView.getEndTimesForPages().get(currentPage);
+        Long countDownTo = endTimeForPage - mPlayer.getCurrentPosition();
+        Log.d(TAG, "Start countdown to " + countDownTo);
+
+        new CountDownTimer(countDownTo, 300){
+            @Override
+            public void onTick(long millisUntilFinished) {
+                Log.d(TAG, "Current page : " +  currentPage + ", Tick millisUntilFinished" + millisUntilFinished);
+            }
+
+            @Override
+            public void onFinish() {
+                Log.d(TAG, "Current page : " +  currentPage + ", onFinish. Pausing audio.");
+                if(mPlayer != null){
+                    mPlayer.pause();
+                }
+            }
+        }.start();
     }
 
     @Override

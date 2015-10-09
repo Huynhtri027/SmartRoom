@@ -77,6 +77,7 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener 
                 baseView.setPaintColor(Color.BLUE);
                 return true;
             case R.id.action_nextpage:
+                baseView.saveEndTimeForCurrentPage();
                 incrementTotalPages();
                 incrementCurrentPage();
                 baseView.clearCanvasForNextPage();
@@ -139,6 +140,7 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener 
 
     @Override
     public void onBackPressed() {
+        baseView.saveEndTimeForCurrentPage();
         saveData();
         stopRecording();
 
@@ -148,6 +150,7 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener 
 
     @Override
     protected void onPause() {
+        baseView.saveEndTimeForCurrentPage();
         saveData();
         stopRecording();
         super.onPause();

@@ -21,10 +21,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import ayushkumar.smartroomsop.interfaces.AudioRecordListener;
 import ayushkumar.smartroomsop.model.InfoModel;
 import ayushkumar.smartroomsop.model.InputModel;
+import ayushkumar.smartroomsop.model.PageEndTimesModel;
 import ayushkumar.smartroomsop.util.Constants;
 
 /**
@@ -44,10 +46,13 @@ public class BaseView extends View {
     private FileOutputStream fileOutputStream;
     private FileOutputStream infoFileOutputStream;
     private Long startTime;
+    private Long startTimeForAudio;
+    private boolean startTimeForAudioSet = false;
     private boolean createMode;
     private int totalPages = 1;
     private int currentPage = 1;
     private ArrayList<InputModel> buffer;
+    private HashMap<Integer, Long> endTimesForPages;
     Gson gson;
 
     AudioRecordListener audioRecordListener;
@@ -62,6 +67,7 @@ public class BaseView extends View {
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 
         buffer = new ArrayList<>();
+        endTimesForPages = new HashMap<>();
         gson = new Gson();
     }
 
@@ -158,7 +164,7 @@ public class BaseView extends View {
      * @param y y-coordinate
      * @param type 's' for Start, 'm' for Move, 'e' for End
      */
-    private void storeValues(float x, float y, char type) {
+   /* private void storeValues(float x, float y, char type) {
         try {
             fileOutputStream = new FileOutputStream(file,true);
         } catch (FileNotFoundException e) {
@@ -174,7 +180,7 @@ public class BaseView extends View {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     /**
      * Store coordinates in file using JSON format
@@ -204,6 +210,11 @@ public class BaseView extends View {
         //TODO Find better way to approach this(As this has to be taken care of in other functions manually, eg clearCanvas)
         if(startTime == null){
             startTime = System.currentTimeMillis();
+            if(!startTimeForAudioSet){
+                startTimeForAudio = startTime;
+                startTimeForAudioSet = true;
+            }
+
 
             //Start recording audio
             //Send this signal to the activity
@@ -261,7 +272,7 @@ public class BaseView extends View {
             storeValuesAsJSON(mX, mY, 'e');
         }
 
-        Log.d(TAG,"Touch_end : "+ mX + "," + mY);
+        Log.d(TAG, "Touch_end : " + mX + "," + mY);
 
         // commit the path to our offscreen
         mCanvas.drawPath(mPath, mPaint);
@@ -338,7 +349,7 @@ public class BaseView extends View {
      * @param y y-coordinate
      */
     public void startDrawing(float x, float y) {
-        touch_start(x,y);
+        touch_start(x, y);
         invalidate();
     }
 
@@ -348,7 +359,7 @@ public class BaseView extends View {
      * @param y y-coordinate
      */
     public void continueDrawing(float x,float y) {
-        touch_move(x,y);
+        touch_move(x, y);
         invalidate();
     }
 
@@ -378,6 +389,15 @@ public class BaseView extends View {
         this.totalPages = totalPages;
     }
 
+    public HashMap<Integer, Long> getEndTimesForPages() {
+        return endTimesForPages;
+    }
+
+    public void setEndTimesForPages(HashMap<Integer, Long> endTimesForPages) {
+        this.endTimesForPages = endTimesForPages;
+    }
+
+
     public void saveData() {
 
         //TODO: Display ProgressBar for saving data. (Start an IntentService maybe?)
@@ -391,13 +411,23 @@ public class BaseView extends View {
         }
 
         InfoModel infoModel = new InfoModel(getTotalPages());
-        String info = gson.toJson(infoModel);
+        String info = gson.toJson(infoModel) + "\n";
         try {
             infoFileOutputStream.write(info.getBytes());
+            //infoFileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        PageEndTimesModel pageEndTimesModel = new PageEndTimesModel(endTimesForPages);
+        String endTimes = gson.toJson(pageEndTimesModel);
+        try {
+            infoFileOutputStream.write(endTimes.getBytes());
             infoFileOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
         for(InputModel model: buffer){
             String data = gson.toJson(model) + "\n";
@@ -418,5 +448,12 @@ public class BaseView extends View {
         }
 
         buffer.clear();
+    }
+
+    public void saveEndTimeForCurrentPage() {
+//        if(currentPage == 1){
+//            startTimeForAudio = System.currentTimeMillis() - startTime;
+//        }
+        endTimesForPages.put(currentPage, System.currentTimeMillis() - startTimeForAudio);
     }
 }

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item android:id="@+id/action_play" android:title="@string/action_play"
-        android:orderInCategory="100" app:showAsAction="always" />
+        android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_nextpage" android:title="@string/action_nextpage"
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_prevpage" android:title="@string/action_prevpage"
