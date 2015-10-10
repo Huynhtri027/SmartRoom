@@ -52,7 +52,7 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener{
     Long lastTime;
     int currentPage = 1;
     int totalPages = 1;
-    int currentProcessingPage = 1;
+    //int currentProcessingPage = 1;
     Menu menu;
     private Boolean animationPlaying = false;
     MediaPlayer mPlayer;
@@ -357,7 +357,7 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener{
         new CountDownTimer(countDownTo, 300){
             @Override
             public void onTick(long millisUntilFinished) {
-                Log.d(TAG, "Current page : " +  currentPage + ", Tick millisUntilFinished" + millisUntilFinished);
+                // Log.d(TAG, "Current page : " +  currentPage + ", Tick millisUntilFinished" + millisUntilFinished);
             }
 
             @Override
