@@ -39,6 +39,19 @@
             android:name=".AudioActivity"
             android:label="@string/title_activity_audio" >
         </activity>
+        <activity
+            android:name=".LoadActivity"
+            android:label="@string/title_activity_load"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="file" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.smroom" />
+                <data android:host="*" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -15,5 +15,6 @@
     <string name="action_prevpage">Previous page</string>
     <string name="action_nextpage">Next Page</string>
     <string name="title_activity_audio">AudioActivity</string>
+    <string name="title_activity_load">LoadActivity</string>
 
 </resources>
