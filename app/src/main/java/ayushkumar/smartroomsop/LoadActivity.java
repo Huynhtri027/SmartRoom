@@ -33,8 +33,11 @@ public class LoadActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Create new", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Create new", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+
+                Intent intent = new Intent(getApplicationContext(), CreateInfoActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -52,6 +55,8 @@ public class LoadActivity extends AppCompatActivity {
 
         if(data!=null && data.getLastPathSegment().endsWith(Constants.extension)){
             String filePath = data.getEncodedPath();
+
+            //TODO: Do this in a background thread.
             unzipFile(filePath);
         }
 

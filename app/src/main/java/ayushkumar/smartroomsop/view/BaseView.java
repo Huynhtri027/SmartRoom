@@ -451,9 +451,6 @@ public class BaseView extends View {
     }
 
     public void saveEndTimeForCurrentPage() {
-//        if(currentPage == 1){
-//            startTimeForAudio = System.currentTimeMillis() - startTime;
-//        }
         endTimesForPages.put(currentPage, System.currentTimeMillis() - startTimeForAudio);
     }
 }
