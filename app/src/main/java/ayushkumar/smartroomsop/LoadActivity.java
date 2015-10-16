@@ -16,7 +16,10 @@ import net.lingala.zip4j.exception.ZipException;
 
 import java.io.File;
 
+import ayushkumar.smartroomsop.events.LoadProjectBackgroundEvent;
+import ayushkumar.smartroomsop.events.LoadProjectResultEvent;
 import ayushkumar.smartroomsop.util.Constants;
+import de.greenrobot.event.EventBus;
 
 public class LoadActivity extends AppCompatActivity {
 
@@ -46,16 +49,28 @@ public class LoadActivity extends AppCompatActivity {
         if(data!=null && data.getLastPathSegment().endsWith(Constants.extension)){
             String filePath = data.getEncodedPath();
 
-            //TODO: Do this in a background thread.
-            unzipFile(filePath);
+            EventBus.getDefault().post(new LoadProjectBackgroundEvent(filePath));
         }
 
         // TODO: Implement list of already saved projects
     }
 
-    private void unzipFile(String filePath) {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    public void onEventBackgroundThread(LoadProjectBackgroundEvent loadProjectEvent) {
+        boolean loaded = true;
         try {
-            ZipFile zipFile = new ZipFile(filePath);
+            ZipFile zipFile = new ZipFile(loadProjectEvent.getFilePath());
             // Check to see if the zip file is password protected
             if (zipFile.isEncrypted()) {
                 // if yes, then set the password for the zip file
@@ -72,15 +87,20 @@ public class LoadActivity extends AppCompatActivity {
             // Extract audio file
             zipFile.extractFile(Constants.audioFile, base);
 
-
-            View coordinatorLayout = findViewById(R.id.coordinatorLayout);
-            Snackbar.make(coordinatorLayout, "Load complete! :)", Snackbar.LENGTH_LONG).show();
         } catch (ZipException e) {
             Log.e(TAG, "Error: " + e.toString());
-            View coordinatorLayout = findViewById(R.id.coordinatorLayout);
-            Snackbar.make(coordinatorLayout, "Error! :(", Snackbar.LENGTH_LONG).show();
+            loaded = false;
+        }finally {
+            EventBus.getDefault().post(new LoadProjectResultEvent(loaded));
         }
-
     }
 
+    public void onEventMainThread(LoadProjectResultEvent resultEvent){
+        View coordinatorLayout = findViewById(R.id.coordinatorLayout);
+        if(resultEvent.isLoaded()){
+            Snackbar.make(coordinatorLayout, "Project loaded! :)", Snackbar.LENGTH_LONG).show();
+        }else{
+            Snackbar.make(coordinatorLayout, "Error while loading project! :(", Snackbar.LENGTH_LONG).show();
+        }
+    }
 }

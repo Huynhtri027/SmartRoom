@@ -160,30 +160,6 @@ public class BaseView extends View {
 
 
     /**
-     * Store coordinates in file
-     * @param x x-coordinate
-     * @param y y-coordinate
-     * @param type 's' for Start, 'm' for Move, 'e' for End
-     */
-   /* private void storeValues(float x, float y, char type) {
-        try {
-            fileOutputStream = new FileOutputStream(file,true);
-        } catch (FileNotFoundException e) {
-            Log.d(TAG,"File not found");
-            e.printStackTrace();
-        }
-
-        //Subtract startTime from current time to reduce size of data
-        String data = (System.currentTimeMillis() - startTime) + ":" + x + "," + y + ":" + type + ":" + currentPage + "\n" ;
-        try {
-            fileOutputStream.write(data.getBytes());
-            fileOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
-
-    /**
      * Store coordinates in file using JSON format
      * @param x x-coordinate
      * @param y y-coordinate
@@ -331,15 +307,6 @@ public class BaseView extends View {
         startTime = null;
 
     }
-
-
-    /*public void saveToText() {
-        try {
-            fileOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
 
     /**
      * Intermediates between Open Mode & BaseView
