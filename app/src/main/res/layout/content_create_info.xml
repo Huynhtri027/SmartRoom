@@ -19,7 +19,8 @@
             android:id="@+id/name_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name of project"/>
+            android:maxLength="15"
+            android:hint="Name of project (max 15 characters)"/>
 
     </android.support.design.widget.TextInputLayout>
     
