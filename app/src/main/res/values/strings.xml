@@ -17,5 +17,6 @@
     <string name="title_activity_audio">AudioActivity</string>
     <string name="title_activity_load">LoadActivity</string>
     <string name="title_activity_create_info">CreateInfoActivity</string>
+    <string name="export">Export to SD card</string>
 
 </resources>

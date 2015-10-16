@@ -27,6 +27,7 @@ import ayushkumar.smartroomsop.interfaces.AudioRecordListener;
 import ayushkumar.smartroomsop.model.InfoModel;
 import ayushkumar.smartroomsop.model.InputModel;
 import ayushkumar.smartroomsop.model.PageEndTimesModel;
+import ayushkumar.smartroomsop.model.ProjectInfoModel;
 import ayushkumar.smartroomsop.util.Constants;
 
 /**
@@ -202,9 +203,6 @@ public class BaseView extends View {
      * @param y y-coordinate
      */
     private void touch_start(float x, float y) {
-        /*//Store initial coordinates
-        Log.d(TAG, "Time: " + System.currentTimeMillis() + ", Coordinates: (" + x + "," + y + ")" );
-        storeValues(x,y);*/
 
         //Set start time if not already set
         //TODO Find better way to approach this(As this has to be taken care of in other functions manually, eg clearCanvas)
@@ -398,7 +396,7 @@ public class BaseView extends View {
     }
 
 
-    public void saveData() {
+    public void saveData(String projectName, String projectDescription) {
 
         //TODO: Display ProgressBar for saving data. (Start an IntentService maybe?)
 
@@ -420,14 +418,22 @@ public class BaseView extends View {
         }
 
         PageEndTimesModel pageEndTimesModel = new PageEndTimesModel(endTimesForPages);
-        String endTimes = gson.toJson(pageEndTimesModel);
+        String endTimes = gson.toJson(pageEndTimesModel) + "\n";
         try {
             infoFileOutputStream.write(endTimes.getBytes());
-            infoFileOutputStream.close();
+            //infoFileOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        ProjectInfoModel projectInfoModel = new ProjectInfoModel(projectName, projectDescription);
+        String projectInfo = gson.toJson(projectInfoModel) + "\n";
+        try {
+            infoFileOutputStream.write(projectInfo.getBytes());
+            infoFileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         for(InputModel model: buffer){
             String data = gson.toJson(model) + "\n";

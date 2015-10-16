@@ -33,26 +33,16 @@ public class LoadActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Create new", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-
                 Intent intent = new Intent(getApplicationContext(), CreateInfoActivity.class);
                 startActivity(intent);
             }
         });
-
 
         // Get the intent that started this activity
         Intent intent = getIntent();
         Uri data = intent.getData();
 
         // Figure out what to do based on the intent type
-        /*Log.d(TAG, "Intent data: " + data.toString());
-        Log.d(TAG, "Intent authority: " + data.getAuthority());
-        Log.d(TAG, "Intent last path seg: " + data.getLastPathSegment());
-        Log.d(TAG, "Intent path " + data.getPath());
-        Log.d(TAG, "Intent encoded path " + data.getEncodedPath());*/
-
         if(data!=null && data.getLastPathSegment().endsWith(Constants.extension)){
             String filePath = data.getEncodedPath();
 
@@ -60,6 +50,7 @@ public class LoadActivity extends AppCompatActivity {
             unzipFile(filePath);
         }
 
+        // TODO: Implement list of already saved projects
     }
 
     private void unzipFile(String filePath) {
@@ -73,17 +64,13 @@ public class LoadActivity extends AppCompatActivity {
 
             // Specify the file name which has to be extracted and the path to which
             // this file has to be extracted
-            String audioPath = Environment.getExternalStorageDirectory().getAbsolutePath()
-                    + File.separator;
-            // Extract audio file
-            zipFile.extractFile(Constants.audioFile, audioPath);
-
             String base = getApplicationContext().getExternalFilesDir(null) + File.separator;
-            String infoFileString = base + Constants.infofile;
-            String dataFileString = base + Constants.filename;
+
             // Extract info & data files
             zipFile.extractFile(Constants.infofile, base);
             zipFile.extractFile(Constants.filename, base);
+            // Extract audio file
+            zipFile.extractFile(Constants.audioFile, base);
 
 
             View coordinatorLayout = findViewById(R.id.coordinatorLayout);

@@ -52,7 +52,6 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener{
     Long lastTime;
     int currentPage = 1;
     int totalPages = 1;
-    //int currentProcessingPage = 1;
     Menu menu;
     private Boolean animationPlaying = false;
     MediaPlayer mPlayer;
@@ -78,8 +77,6 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener{
     protected void onResume() {
         super.onResume();
 
-
-//        initFile(this);
     }
 
     @Override
@@ -114,7 +111,6 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener{
             case R.id.action_nextpage:
                 Log.d(TAG, "Next Page");
                 currentPage++;
-//                totalPages++;
                 baseView.clearCanvasForNextPage();
                 lastTime = null;
                 return true;
@@ -334,8 +330,7 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener{
         }
 
         mPlayer = new MediaPlayer();
-        String audioFile = Environment.getExternalStorageDirectory().getAbsolutePath()
-                + File.separator + (Constants.audioFile);
+        String audioFile = getApplicationContext().getExternalFilesDir(null) + File.separator + (Constants.audioFile);
         try {
             mPlayer.setDataSource(audioFile);
             mPlayer.prepare();

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import ayushkumar.smartroomsop.util.Constants;
+import ayushkumar.smartroomsop.util.Util;
 
 /**
  * Created by Ayush on 22-01-15.
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button:
-                Intent intent = new Intent(this, CreateActivity.class);
+                Intent intent = new Intent(this, CreateInfoActivity.class);
                 startActivity(intent);
                 return;
 
@@ -62,20 +64,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return;
 
             case R.id.button4:
-                createZipFile();
+                if(Util.isExternalStorageWritable()){
+                    createZipFile();
+                }else{
+                    Toast.makeText(getApplicationContext(), "External Storage not available. :(", Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "isExternalStorageWritable returned false");
+                }
                 return;
         }
     }
 
     private void createZipFile() {
+        // TODO: Do this on a background thread
         Context c = getApplicationContext();
 
-        String baseString = Environment.getExternalStorageDirectory().getAbsolutePath()
-                + File.separator;
-        String audioFileString = baseString + Constants.audioFile;
-
+        // baseString takes individual files(info, data, audio etc) from app's private data directory
+        /*String baseString = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator;*/
         String base = c.getExternalFilesDir(null) + File.separator;
-
+        String audioFileString = base + Constants.audioFile;
         String dataFileString = base + Constants.filename;
         String infoFileString = base + Constants.infofile;
 
@@ -84,8 +91,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         File infoFile = new File(infoFileString);
 
         Log.d(TAG, " " + audioFile.getAbsolutePath() + ", Exists:" + audioFile.exists() );
-        Log.d(TAG, " " + dataFile.getAbsolutePath() + ", Exists:" + dataFile.exists() );
-        Log.d(TAG, " " +infoFile.getAbsolutePath() + ", Exists:" + infoFile.exists() );
+        Log.d(TAG, " " + dataFile.getAbsolutePath() + ", Exists:" + dataFile.exists());
+        Log.d(TAG, " " + infoFile.getAbsolutePath() + ", Exists:" + infoFile.exists());
 
         ArrayList<File> filesToBeZipped = new ArrayList<>();
         filesToBeZipped.add(audioFile);
@@ -93,13 +100,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         filesToBeZipped.add(infoFile);
 
 
+        String baseExportDirString = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator + Constants.app_directory + File.separator;
+        Log.d(TAG, "baseExportDirString : " + baseExportDirString);
+
         try {
-            File zipFileDel = new File(baseString + Constants.zipFile);
+
+            File baseExportDir = new File(baseExportDirString);
+            if(baseExportDir.mkdirs()){
+                Log.d(TAG, "Make directories returned true");
+            }else{
+                Log.d(TAG, "Make directories returned false");
+            }
+
+            if(baseExportDir.isDirectory()){
+                Log.d(TAG, baseExportDirString + " is a directory");
+            }else{
+                Log.d(TAG, baseExportDirString + " is not a directory");
+            }
+
+            File zipFileDel = new File(baseExportDirString + Constants.zipFile);
             if(zipFileDel.exists()){
                 zipFileDel.delete();
             }
 
-            ZipFile zipFile = new ZipFile(baseString + Constants.zipFile);
+            ZipFile zipFile = new ZipFile(baseExportDirString + Constants.zipFile);
             ZipParameters parameters = new ZipParameters();
 
             parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);

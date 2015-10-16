@@ -23,9 +23,6 @@ public class CreateInfoActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Open create activity", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-
                 validateInputs();
             }
         });
@@ -60,6 +57,7 @@ public class CreateInfoActivity extends AppCompatActivity {
             i.putExtra("name", name);
             i.putExtra("description", desc);
             startActivity(i);
+            finish();
         }
 
     }

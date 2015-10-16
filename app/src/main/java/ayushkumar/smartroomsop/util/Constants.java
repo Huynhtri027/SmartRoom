@@ -10,4 +10,6 @@ public class Constants {
     public static final String audioFile = "audio.3gp";
     public static final String extension = ".smroom";
     public static final String zipFile = "smartroom" + extension;
+    public static final String app_directory = "Smartroom";
+
 }
