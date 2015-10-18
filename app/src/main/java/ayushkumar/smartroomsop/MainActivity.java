@@ -38,11 +38,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button open = (Button) findViewById(R.id.button2);
         Button read = (Button) findViewById(R.id.button3);
         Button export = (Button) findViewById(R.id.button4);
+        Button load = (Button) findViewById(R.id.button5);
 
         create.setOnClickListener(this);
         open.setOnClickListener(this);
         read.setOnClickListener(this);
         export.setOnClickListener(this);
+        load.setOnClickListener(this);
     }
 
     @Override
@@ -70,6 +72,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(getApplicationContext(), "External Storage not available. :(", Toast.LENGTH_LONG).show();
                     Log.e(TAG, "isExternalStorageWritable returned false");
                 }
+                return;
+            case R.id.button5:
+                Intent intent5 = new Intent(this, LoadActivity.class);
+                startActivity(intent5);
                 return;
         }
     }

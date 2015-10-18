@@ -10,12 +10,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.widget.ListView;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
 import java.io.File;
 
+import ayushkumar.smartroomsop.adapters.ProjectsListAdapter;
+import ayushkumar.smartroomsop.adapters.ProjectsRecyclerViewAdapter;
 import ayushkumar.smartroomsop.events.LoadProjectBackgroundEvent;
 import ayushkumar.smartroomsop.events.LoadProjectResultEvent;
 import ayushkumar.smartroomsop.util.Constants;
@@ -24,6 +29,9 @@ import de.greenrobot.event.EventBus;
 public class LoadActivity extends AppCompatActivity {
 
     private static final String TAG = "LoadActivity";
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mRecyclerViewAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +49,10 @@ public class LoadActivity extends AppCompatActivity {
             }
         });
 
+        mRecyclerView = (RecyclerView) findViewById(R.id.projects_recycler_view);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
         // Get the intent that started this activity
         Intent intent = getIntent();
         Uri data = intent.getData();
@@ -53,6 +65,12 @@ public class LoadActivity extends AppCompatActivity {
         }
 
         // TODO: Implement list of already saved projects
+
+        String baseProjectDirString = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator + Constants.app_directory + File.separator;
+        mRecyclerView.setAdapter(new ProjectsRecyclerViewAdapter(baseProjectDirString));
+
+
     }
 
     @Override

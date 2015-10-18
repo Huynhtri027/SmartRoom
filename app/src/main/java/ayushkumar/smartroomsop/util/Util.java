@@ -45,4 +45,18 @@ public class Util {
         }
         return newName.substring(0, newName.length() - 1);
     }
+
+    /**
+     * Convert a String without spaces to one with spaces
+     * @param name without spaces
+     * @return name with spaces
+     */
+    public static  String convertStringToStringWithSpaces(String name){
+        String[] name_parts = name.trim().split("_");
+        String newName = "";
+        for(String name_part: name_parts){
+            newName += (name_part + " ");
+        }
+        return newName;
+    }
 }
