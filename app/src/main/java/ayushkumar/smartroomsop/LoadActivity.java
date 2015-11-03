@@ -12,31 +12,37 @@ import android.util.Log;
 import android.view.View;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.ListView;
+import android.widget.Toast;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
 import java.io.File;
 
-import ayushkumar.smartroomsop.adapters.ProjectsListAdapter;
 import ayushkumar.smartroomsop.adapters.ProjectsRecyclerViewAdapter;
+import ayushkumar.smartroomsop.events.CopyProjectBackgroundEvent;
+import ayushkumar.smartroomsop.events.CopyProjectResultEvent;
 import ayushkumar.smartroomsop.events.LoadProjectBackgroundEvent;
 import ayushkumar.smartroomsop.events.LoadProjectResultEvent;
 import ayushkumar.smartroomsop.util.Constants;
+import ayushkumar.smartroomsop.util.FileUtil;
+import ayushkumar.smartroomsop.util.ItemClickSupport;
 import de.greenrobot.event.EventBus;
 
 public class LoadActivity extends AppCompatActivity {
 
     private static final String TAG = "LoadActivity";
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mRecyclerViewAdapter;
+    private ProjectsRecyclerViewAdapter mRecyclerViewAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load);
+
+        EventBus.getDefault().register(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -57,26 +63,49 @@ public class LoadActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Uri data = intent.getData();
 
-        // Figure out what to do based on the intent type
-        if(data!=null && data.getLastPathSegment().endsWith(Constants.extension)){
-            String filePath = data.getEncodedPath();
-
-            EventBus.getDefault().post(new LoadProjectBackgroundEvent(filePath));
-        }
-
         // TODO: Implement list of already saved projects
 
         String baseProjectDirString = Environment.getExternalStorageDirectory().getAbsolutePath()
                 + File.separator + Constants.app_directory + File.separator;
-        mRecyclerView.setAdapter(new ProjectsRecyclerViewAdapter(baseProjectDirString));
+
+        mRecyclerViewAdapter = new ProjectsRecyclerViewAdapter(baseProjectDirString);
+        mRecyclerView.setAdapter(mRecyclerViewAdapter);
+
+        ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                ProjectsRecyclerViewAdapter adapter = (ProjectsRecyclerViewAdapter) mRecyclerView.getAdapter();
+                Toast.makeText(getApplicationContext(), "Clicked on " + position, Toast.LENGTH_SHORT).show();
+                String fileName = adapter.getFiles().get(position).getName();
+                String filePath = adapter.getFiles().get(position).getAbsolutePath() + File.separator + fileName + Constants.extension;
+                Log.d(TAG, adapter.getFiles().toString());
+                Log.d(TAG, adapter.getFiles().get(position).getName());
+                Log.d(TAG, adapter.getFiles().get(position).getAbsolutePath());
+                EventBus.getDefault().post(new LoadProjectBackgroundEvent(filePath));
+                Intent intent1 = new Intent(getApplicationContext(), OpenActivity.class);
+                startActivity(intent1);
+            }
+        });
+
+        // Figure out what to do based on the intent type
+        if(data!=null && data.getLastPathSegment().endsWith(Constants.extension)){
+            String fileName = data.getLastPathSegment();
+            int filePathLength = data.getEncodedPath().length();
+            String filePath = data.getEncodedPath().substring(0, filePathLength - fileName.length());
+
+            Log.d(TAG, "File Name to be copied : " + fileName);
+            Log.d(TAG, "File Path : " + filePath);
+
+            EventBus.getDefault().post(new CopyProjectBackgroundEvent(filePath, fileName));
+        }
 
 
     }
 
     @Override
     protected void onStart() {
+        //EventBus.getDefault().register(this);
         super.onStart();
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -120,5 +149,24 @@ public class LoadActivity extends AppCompatActivity {
         }else{
             Snackbar.make(coordinatorLayout, "Error while loading project! :(", Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    public void onEventBackgroundThread(CopyProjectBackgroundEvent copyEvent){
+
+        String projectName = copyEvent.getFileName().substring(0, copyEvent.getFileName().length() - Constants.extension.length());
+        String baseExportDirString = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator + Constants.app_directory + File.separator + projectName + File.separator;
+        Log.d(TAG, "baseExportDirString : " + baseExportDirString);
+        FileUtil.copyFile(copyEvent.getFilePath(), copyEvent.getFileName(), baseExportDirString);
+
+        Log.d(TAG, "Copied file");
+        EventBus.getDefault().post(new CopyProjectResultEvent());
+    }
+
+    public void onEventMainThread(CopyProjectResultEvent copyResultEvent){
+
+        Log.d(TAG, "Showing copy result in UI");
+        Toast.makeText(getApplicationContext(), "File Copied!", Toast.LENGTH_SHORT).show();
+        mRecyclerViewAdapter.refreshData();
     }
 }

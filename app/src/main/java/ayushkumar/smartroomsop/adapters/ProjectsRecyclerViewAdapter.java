@@ -23,10 +23,11 @@ public class ProjectsRecyclerViewAdapter extends RecyclerView.Adapter<ProjectsRe
     private static final String TAG = "ProjectsRecyclerAdapter";
 
     private ArrayList<File> files;
-//    private ArrayList<String> descriptions;
+    private String path;
 
     public ProjectsRecyclerViewAdapter(String path) {
 
+        this.path = path;
         File baseDirectory = new File(path);
         if(!baseDirectory.isDirectory()){
             Log.e(TAG, "Not a directory");
@@ -38,6 +39,23 @@ public class ProjectsRecyclerViewAdapter extends RecyclerView.Adapter<ProjectsRe
             }
         }*/
 
+    }
+
+    public ArrayList<File> getFiles() {
+        return files;
+    }
+
+    public void setFiles(ArrayList<File> files) {
+        this.files = files;
+    }
+
+    public void refreshData(){
+        File baseDirectory = new File(path);
+        if(!baseDirectory.isDirectory()){
+            Log.e(TAG, "Not a directory");
+        }
+        this.files = new ArrayList<>(Arrays.asList(baseDirectory.listFiles()));
+        notifyDataSetChanged();
     }
 
     // Create new views (invoked by the layout manager)
