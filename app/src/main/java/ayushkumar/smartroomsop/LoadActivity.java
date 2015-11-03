@@ -75,12 +75,12 @@ public class LoadActivity extends AppCompatActivity {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 ProjectsRecyclerViewAdapter adapter = (ProjectsRecyclerViewAdapter) mRecyclerView.getAdapter();
-                Toast.makeText(getApplicationContext(), "Clicked on " + position, Toast.LENGTH_SHORT).show();
                 String fileName = adapter.getFiles().get(position).getName();
                 String filePath = adapter.getFiles().get(position).getAbsolutePath() + File.separator + fileName + Constants.extension;
-                Log.d(TAG, adapter.getFiles().toString());
-                Log.d(TAG, adapter.getFiles().get(position).getName());
-                Log.d(TAG, adapter.getFiles().get(position).getAbsolutePath());
+                Toast.makeText(getApplicationContext(), "Opened " + fileName, Toast.LENGTH_SHORT).show();
+//                Log.d(TAG, adapter.getFiles().toString());
+//                Log.d(TAG, adapter.getFiles().get(position).getName());
+//                Log.d(TAG, adapter.getFiles().get(position).getAbsolutePath());
                 EventBus.getDefault().post(new LoadProjectBackgroundEvent(filePath));
                 Intent intent1 = new Intent(getApplicationContext(), OpenActivity.class);
                 startActivity(intent1);
@@ -166,7 +166,7 @@ public class LoadActivity extends AppCompatActivity {
     public void onEventMainThread(CopyProjectResultEvent copyResultEvent){
 
         Log.d(TAG, "Showing copy result in UI");
-        Toast.makeText(getApplicationContext(), "File Copied!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Imported the project!", Toast.LENGTH_LONG).show();
         mRecyclerViewAdapter.refreshData();
     }
 }
