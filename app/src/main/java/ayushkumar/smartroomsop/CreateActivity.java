@@ -10,6 +10,10 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import net.lingala.zip4j.core.ZipFile;
@@ -32,7 +36,7 @@ import ayushkumar.smartroomsop.view.BaseView;
 import de.greenrobot.event.EventBus;
 
 
-public class CreateActivity extends BaseActivity implements AudioRecordListener {
+public class CreateActivity extends BaseActivity implements AudioRecordListener, View.OnClickListener {
 
     Paint mPaint;
     BaseView baseView;
@@ -57,7 +61,14 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener 
 
         baseView = new BaseView(this, mPaint, true);
         baseView.setAudioRecordListener(this);
-        setContentView(baseView);
+        setContentView(R.layout.activity_create);
+
+        baseView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        ((LinearLayout)findViewById(R.id.baseview_ll)).addView(baseView, 0);
+
+        /*(findViewById(R.id.bt_prev)).setOnClickListener(this);
+        (findViewById(R.id.bt_play)).setOnClickListener(this);*/
+        (findViewById(R.id.bt_next)).setOnClickListener(this);
 
     }
 
@@ -70,6 +81,29 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener 
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.bt_next:
+                baseView.saveEndTimeForCurrentPage();
+                incrementTotalPages();
+                incrementCurrentPage();
+                baseView.clearCanvasForNextPage();
+                break;
+
+            /*case R.id.bt_play:
+                baseView.saveEndTimeForCurrentPage();
+                incrementTotalPages();
+                incrementCurrentPage();
+                baseView.clearCanvasForNextPage();
+                break;
+
+            case R.id.bt_prev:
+                break;*/
+        }
     }
 
     @Override
@@ -333,9 +367,9 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener 
 
     public void onEventMainThread(ExportProjectResultEvent projectResultEvent){
         if(projectResultEvent.isFileExists()){
-            Toast.makeText(getApplicationContext(), "Export Successful :)", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Project Export Successful :)", Toast.LENGTH_SHORT).show();
         }else {
-            Toast.makeText(getApplicationContext(), "Export Failed :(", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Project Export Failed :(", Toast.LENGTH_SHORT).show();
         }
     }
 }

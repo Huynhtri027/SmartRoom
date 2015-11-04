@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -40,7 +41,7 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by Ayush on 22-01-15.
  */
-public class OpenActivity extends BaseActivity implements AudioRecordListener{
+public class OpenActivity extends BaseActivity implements AudioRecordListener, View.OnClickListener{
 
     private static final String TAG = "OpenActivity";
     Paint mPaint;
@@ -71,6 +72,11 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener{
 
         baseView = new BaseView(this, mPaint, false);
         ((FrameLayout) findViewById(R.id.open_ll)).addView(baseView, 0);
+
+        (findViewById(R.id.bt_prev)).setOnClickListener(this);
+        (findViewById(R.id.bt_play)).setOnClickListener(this);
+        (findViewById(R.id.bt_next)).setOnClickListener(this);
+
     }
 
     @Override
@@ -92,6 +98,61 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener{
                 e.printStackTrace();
             } finally {
             }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.bt_next:
+                Log.d(TAG, "Next Page");
+
+                if(getAnimationPlaying()){
+                    Toast.makeText(getApplicationContext(), "Please wait till this page ends playing.", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
+                if (currentPage == totalPages){
+                    Toast.makeText(getApplicationContext(), "This is the last page", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
+                currentPage++;
+                baseView.clearCanvasForNextPage();
+                lastTime = null;
+                break;
+
+            case R.id.bt_play:
+                Log.d(TAG, "Play");
+
+                if(getAnimationPlaying()){
+                    Toast.makeText(getApplicationContext(), "Please wait till this page ends playing.", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
+                baseView.clearCanvasForNextPage();
+                lastTime = null;
+                playFromJsonFile();
+                startPlaying();     //Start playing audio
+                break;
+
+            case R.id.bt_prev:
+                Log.d(TAG, "Prev Page");
+
+                if(getAnimationPlaying()){
+                    Toast.makeText(getApplicationContext(), "Please wait till this page ends playing.", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
+                if(currentPage == 1){
+                    Toast.makeText(getApplicationContext(), "This is the first page", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
+                baseView.clearCanvasForNextPage();
+                currentPage--;
+                lastTime = null;
+                break;
         }
     }
 
@@ -179,7 +240,6 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener{
             e.printStackTrace();
         }catch (IOException i) {
             i.printStackTrace();
-        } finally {
         }
         try {
             Log.d(TAG, "Current page : " + currentPage + ", Total pages : " + totalPages);

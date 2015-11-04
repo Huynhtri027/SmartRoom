@@ -18,5 +18,8 @@
     <string name="title_activity_load">LoadActivity</string>
     <string name="title_activity_create_info">CreateInfoActivity</string>
     <string name="export">Export to SD card</string>
+    <string name="bt_prev_text"><![CDATA[<<]]></string>
+    <string name="bt_play_text">Play</string>
+    <string name="bt_next_text"><![CDATA[>>]]></string>
 
 </resources>

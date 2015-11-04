@@ -59,12 +59,6 @@ public class LoadActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        // Get the intent that started this activity
-        Intent intent = getIntent();
-        Uri data = intent.getData();
-
-        // TODO: Implement list of already saved projects
-
         String baseProjectDirString = Environment.getExternalStorageDirectory().getAbsolutePath()
                 + File.separator + Constants.app_directory + File.separator;
 
@@ -86,6 +80,12 @@ public class LoadActivity extends AppCompatActivity {
                 startActivity(intent1);
             }
         });
+
+
+
+        // Get the intent that started this activity
+        Intent intent = getIntent();
+        Uri data = intent.getData();
 
         // Figure out what to do based on the intent type
         if(data!=null && data.getLastPathSegment().endsWith(Constants.extension)){
