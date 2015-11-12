@@ -413,7 +413,8 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
     }
 
     public Boolean getAnimationPlaying() {
-        return animationPlaying;
+//        return animationPlaying;
+        return (mPlayer!= null && mPlayer.isPlaying());
     }
 
     public void setAnimationPlaying(Boolean animationPlaying) {
