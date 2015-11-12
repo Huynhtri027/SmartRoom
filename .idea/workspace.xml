@@ -30,9 +30,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="25531f4f-73ab-48a8-a97d-7f2c512c7b70" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/util/Constants.java" afterPath="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/util/Constants.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/OpenActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/OpenActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/events/UploadProjectBackgroundEvent.java" afterPath="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/events/UploadProjectBackgroundEvent.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/adapters/ProjectsRecyclerViewAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/adapters/ProjectsRecyclerViewAdapter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="SmartRoomSOP.iws" />
@@ -125,13 +123,50 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="OpenActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="OpenActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/OpenActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.15816326">
-              <caret line="521" column="21" selection-start-line="521" selection-start-column="21" selection-end-line="521" selection-end-column="21" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="85" column="18" selection-start-line="85" selection-start-column="18" selection-end-line="85" selection-end-column="18" />
               <folding>
                 <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Constants.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/util/Constants.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="21" column="1" selection-start-line="21" selection-start-column="1" selection-end-line="21" selection-end-column="1" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LoadActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/LoadActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="64" column="47" selection-start-line="64" selection-start-column="47" selection-end-line="64" selection-end-column="47" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ProjectsRecyclerViewAdapter.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/adapters/ProjectsRecyclerViewAdapter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.9438776">
+              <caret line="50" column="21" selection-start-line="50" selection-start-column="21" selection-end-line="50" selection-end-column="21" />
+              <folding>
+                <element signature="e#1377#1378#0" expanded="true" />
+                <element signature="e#1405#1406#0" expanded="true" />
+                <element signature="e#2605#2606#0" expanded="true" />
+                <element signature="e#2640#2641#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1655,7 +1690,6 @@
         <option value="$PROJECT_DIR$/app/src/main/res/values/ids.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/util/FileUtil.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/events/CopyProjectBackgroundEvent.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/adapters/ProjectsRecyclerViewAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_create.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_open.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/LoadActivity.java" />
@@ -1679,6 +1713,7 @@
         <option value="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/util/Constants.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/events/UploadProjectBackgroundEvent.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/OpenActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/adapters/ProjectsRecyclerViewAdapter.java" />
       </list>
     </option>
   </component>
@@ -1854,7 +1889,7 @@
     <property name="LayoutCode.rearrangeEntriesJava" value="false" />
     <property name="OverrideImplement.combined" value="true" />
     <property name="OverrideImplement.overriding.sorted" value="false" />
-    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/java/ayushkumar/smartroomsop/OpenActivity.java&#10;OPenA&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/java/ayushkumar/smartroomsop/OpenActivity.java&#10;OpenA&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/java/ayushkumar/smartroomsop/OpenActivity.java&#10;Op&#9;ACTION&#9;OpenFile&#10;Uplo&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/java/ayushkumar/smartroomsop/events/UploadProjectResultEvent.java&#10;Android&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/AndroidManifest.xml&#10;Cons&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/java/ayushkumar/smartroomsop/util/Constants.java&#10;Consta&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/java/ayushkumar/smartroomsop/util/Constants.java&#10;buil&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/build.gradle&#10;BaseA&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/java/ayushkumar/smartroomsop/util/BaseActivity.java&#10;Co&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/java/ayushkumar/smartroomsop/util/Constants.java&#10;Const&#9;PSI&#9;JAVA://ayushkumar.smartroomsop.util.Constants&#10;Man&#9;FILE&#9;file://C:/Users/Ayush/AndroidStudioProjects/SmartRoomSOP/app/src/main/AndroidManifest.xml" />
+    <property name="SearchEverywhereHistoryKey" value="Cons&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/java/ayushkumar/smartroomsop/util/Constants.java&#10;OPenA&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/java/ayushkumar/smartroomsop/OpenActivity.java&#10;OpenA&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/java/ayushkumar/smartroomsop/OpenActivity.java&#10;Op&#9;ACTION&#9;OpenFile&#10;Uplo&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/java/ayushkumar/smartroomsop/events/UploadProjectResultEvent.java&#10;Android&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/AndroidManifest.xml&#10;Consta&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/java/ayushkumar/smartroomsop/util/Constants.java&#10;buil&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/build.gradle&#10;BaseA&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/java/ayushkumar/smartroomsop/util/BaseActivity.java&#10;Co&#9;FILE&#9;file:///Users/ayush/AndroidStudioProjects/SmartRoom/app/src/main/java/ayushkumar/smartroomsop/util/Constants.java&#10;Const&#9;PSI&#9;JAVA://ayushkumar.smartroomsop.util.Constants&#10;Man&#9;FILE&#9;file://C:/Users/Ayush/AndroidStudioProjects/SmartRoomSOP/app/src/main/AndroidManifest.xml" />
     <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
@@ -2172,7 +2207,13 @@
       <option name="project" value="LOCAL" />
       <updated>1447337017856</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Fix upload parameters">
+      <created>1447343826850</created>
+      <option name="number" value="00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1447343826850</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -2244,7 +2285,8 @@
     <MESSAGE value="Add upload option" />
     <MESSAGE value="Add author info &amp; display of project info." />
     <MESSAGE value="Fix animation information bug." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix animation information bug." />
+    <MESSAGE value="Fix upload parameters" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix upload parameters" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -2384,13 +2426,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/adapters/ProjectsRecyclerViewAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.3010204">
-          <caret line="51" column="29" selection-start-line="51" selection-start-column="29" selection-end-line="51" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/events/CopyProjectBackgroundEvent.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.6122449">
@@ -2498,16 +2533,6 @@
         <state vertical-scroll-proportion="0.7653061">
           <caret line="50" column="58" selection-start-line="50" selection-start-column="58" selection-end-line="50" selection-end-column="58" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/LoadActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5408163">
-          <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2683,14 +2708,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/util/Constants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5102041">
-          <caret line="20" column="79" selection-start-line="20" selection-start-column="79" selection-end-line="20" selection-end-column="79" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/events/UploadProjectBackgroundEvent.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5867347">
@@ -2706,10 +2723,41 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/OpenActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.15816326">
-          <caret line="521" column="21" selection-start-line="521" selection-start-column="21" selection-end-line="521" selection-end-column="21" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="85" column="18" selection-start-line="85" selection-start-column="18" selection-end-line="85" selection-end-column="18" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/util/Constants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="1" selection-start-line="21" selection-start-column="1" selection-end-line="21" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/LoadActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="64" column="47" selection-start-line="64" selection-start-column="47" selection-end-line="64" selection-end-column="47" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ayushkumar/smartroomsop/adapters/ProjectsRecyclerViewAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.9438776">
+          <caret line="50" column="21" selection-start-line="50" selection-start-column="21" selection-end-line="50" selection-end-column="21" />
+          <folding>
+            <element signature="e#1377#1378#0" expanded="true" />
+            <element signature="e#1405#1406#0" expanded="true" />
+            <element signature="e#2605#2606#0" expanded="true" />
+            <element signature="e#2640#2641#0" expanded="true" />
           </folding>
         </state>
       </provider>

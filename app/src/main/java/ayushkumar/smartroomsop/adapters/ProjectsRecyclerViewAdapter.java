@@ -30,9 +30,15 @@ public class ProjectsRecyclerViewAdapter extends RecyclerView.Adapter<ProjectsRe
         this.path = path;
         File baseDirectory = new File(path);
         if(!baseDirectory.isDirectory()){
-            Log.e(TAG, "Not a directory");
+            Log.d(TAG, "Not a directory");
+            if (!baseDirectory.mkdirs()){
+                Log.e(TAG, "Couldn't create directory");
+            }
+            this.files = new ArrayList<>();
+        }else {
+            this.files = new ArrayList<>(Arrays.asList(baseDirectory.listFiles()));
         }
-        this.files = new ArrayList<>(Arrays.asList(baseDirectory.listFiles()));
+
         /*descriptions = new ArrayList<>();
         if(Util.isExternalStorageReadable()){
             for (File file: files){
