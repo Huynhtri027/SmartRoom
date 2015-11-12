@@ -68,18 +68,22 @@ public class LoadActivity extends AppCompatActivity {
         ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                ProjectsRecyclerViewAdapter adapter = (ProjectsRecyclerViewAdapter) mRecyclerView.getAdapter();
-                String fileName = adapter.getFiles().get(position).getName();
-                String filePath = adapter.getFiles().get(position).getAbsolutePath() + File.separator + fileName + Constants.extension;
-                Toast.makeText(getApplicationContext(), "Opened " + fileName, Toast.LENGTH_SHORT).show();
+
+                if(v.findViewById(R.id.project_name_tv) != null){
+                    ProjectsRecyclerViewAdapter adapter = (ProjectsRecyclerViewAdapter) mRecyclerView.getAdapter();
+                    String fileName = adapter.getFiles().get(position).getName();
+                    String filePath = adapter.getFiles().get(position).getAbsolutePath() + File.separator + fileName + Constants.extension;
+                    Toast.makeText(getApplicationContext(), "Opened " + fileName, Toast.LENGTH_SHORT).show();
 //                Log.d(TAG, adapter.getFiles().toString());
 //                Log.d(TAG, adapter.getFiles().get(position).getName());
 //                Log.d(TAG, adapter.getFiles().get(position).getAbsolutePath());
-                EventBus.getDefault().post(new LoadProjectBackgroundEvent(filePath));
-                Intent intent1 = new Intent(getApplicationContext(), OpenActivity.class);
-                intent1.putExtra("fileName", fileName);
-                intent1.putExtra("filePath", filePath);
-                startActivity(intent1);
+                    EventBus.getDefault().post(new LoadProjectBackgroundEvent(filePath));
+                    Intent intent1 = new Intent(getApplicationContext(), OpenActivity.class);
+                    intent1.putExtra("fileName", fileName);
+                    intent1.putExtra("filePath", filePath);
+                    startActivity(intent1);
+                }
+
             }
         });
 

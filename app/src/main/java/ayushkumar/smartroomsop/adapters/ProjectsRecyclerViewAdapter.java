@@ -18,12 +18,13 @@ import ayushkumar.smartroomsop.util.Util;
 /**
  * Created by ayush on 17/10/15.
  */
-public class ProjectsRecyclerViewAdapter extends RecyclerView.Adapter<ProjectsRecyclerViewAdapter.ViewHolder> {
+public class ProjectsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = "ProjectsRecyclerAdapter";
 
     private ArrayList<File> files;
     private String path;
+    private static final int EMPTY_VIEW = 1;
 
     public ProjectsRecyclerViewAdapter(String path) {
 
@@ -66,25 +67,41 @@ public class ProjectsRecyclerViewAdapter extends RecyclerView.Adapter<ProjectsRe
 
     // Create new views (invoked by the layout manager)
     @Override
-    public ProjectsRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.project_name_list_item, parent, false);
-        // set the view's size, margins, paddings and layout parameters if required
+        View v;
+        if(viewType == EMPTY_VIEW){
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_project_view, parent, false);
+            return new EmptyViewHolder(v);
+        }
 
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.project_name_list_item, parent, false);
+        // set the view's size, margins, padding and layout parameters if required
+
+        return new ViewHolder(v);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ProjectsRecyclerViewAdapter.ViewHolder holder, int position) {
-        holder.mTextView.setText(Util.convertStringToStringWithSpaces(files.get(position).getName()));
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ViewHolder){
+            ViewHolder vh = (ViewHolder) holder;
+            vh.mTextView.setText(Util.convertStringToStringWithSpaces(files.get(position).getName()));
+        }
     }
 
     @Override
     public int getItemCount() {
-        return files.size();
+        return (files.size() > 0)? files.size() : 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(files.size() == 0){
+            return EMPTY_VIEW;
+        }
+        return super.getItemViewType(position);
     }
 
     // Provide a reference to the views for each data item
@@ -93,11 +110,15 @@ public class ProjectsRecyclerViewAdapter extends RecyclerView.Adapter<ProjectsRe
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView mTextView;
-//        public TextView mTextViewDesc;
         public ViewHolder(View v) {
             super(v);
             mTextView = (TextView)v.findViewById(R.id.project_name_tv);
-//            mTextViewDesc = (TextView) v.findViewById(R.id.project_desc_tv);
+        }
+    }
+
+    public class EmptyViewHolder extends RecyclerView.ViewHolder {
+        public EmptyViewHolder(View itemView) {
+            super(itemView);
         }
     }
 }
