@@ -7,13 +7,23 @@ import java.io.File;
  */
 public class UploadProjectBackgroundEvent {
     private String title;
+    private String author;
     private String description;
     private File file;
 
-    public UploadProjectBackgroundEvent(String title, String description, File file) {
+    public UploadProjectBackgroundEvent(String title, String author, String description, File file) {
         this.title = title;
+        this.author = author;
         this.description = description;
         this.file = file;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getTitle() {

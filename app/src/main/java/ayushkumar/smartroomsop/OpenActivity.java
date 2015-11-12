@@ -211,6 +211,7 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
 
                 String title = getIntent().getStringExtra("fileName");
                 String description = "";
+                String author = "";
 
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(infoFile));
@@ -221,6 +222,7 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
 
                     title = projectInfoModel.getName();
                     description = projectInfoModel.getDescription();
+                    author = projectInfoModel.getAuthor();
 
                 }catch(FileNotFoundException f){
                     Log.e(TAG, f.getMessage());
@@ -229,7 +231,7 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
                 }
 
                 File file = new File(getIntent().getStringExtra("filePath"));
-                EventBus.getDefault().post(new UploadProjectBackgroundEvent(title, description, file));
+                EventBus.getDefault().post(new UploadProjectBackgroundEvent(title, description, author, file));
 
 
         }
@@ -484,7 +486,7 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
         }
     }
 
-    public Boolean uploadFile(String serverURL, String title, String description, File file) {
+    public Boolean uploadFile(String serverURL, String title, String description, String author, File file) {
         try {
 
             RequestBody requestBody = new MultipartBuilder()
@@ -492,6 +494,7 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
                     .addFormDataPart(Constants.file, file.getName(),
                             RequestBody.create(MediaType.parse("application/smartroom"), file))
                     .addFormDataPart(Constants.title, title)
+                    .addFormDataPart(Constants.author, author)
                     .addFormDataPart(Constants.description, description)
                     .build();
 
@@ -531,7 +534,7 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
     }
 
     public void onEventBackgroundThread(UploadProjectBackgroundEvent uploadEvent){
-        if(uploadFile(Constants.upload_url, uploadEvent.getTitle(), uploadEvent.getDescription(), uploadEvent.getFile())){
+        if(uploadFile(Constants.upload_url, uploadEvent.getTitle(), uploadEvent.getDescription(), uploadEvent.getAuthor(), uploadEvent.getFile())){
             Log.d(TAG, "Added to OkHttp queue");
         }else{
             Log.d(TAG, "Couldn't add to OkHttp queue");

@@ -15,6 +15,7 @@ public class Constants {
     // Server specific constants
     public static final String title = "title";
     public static final String description = "description";
+    public static final String author = "author";
     public static final String file = "project_file";
 
     public static final String upload_url = "http://192.168.43.197:8015/project/";
