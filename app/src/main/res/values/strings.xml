@@ -21,5 +21,7 @@
     <string name="bt_prev_text"><![CDATA[<<]]></string>
     <string name="bt_play_text">Play</string>
     <string name="bt_next_text"><![CDATA[>>]]></string>
+    <string name="action_upload">upload</string>
+    <string name="title_activity_upload">UploadActivity</string>
 
 </resources>

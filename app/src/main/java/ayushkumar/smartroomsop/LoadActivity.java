@@ -77,6 +77,8 @@ public class LoadActivity extends AppCompatActivity {
 //                Log.d(TAG, adapter.getFiles().get(position).getAbsolutePath());
                 EventBus.getDefault().post(new LoadProjectBackgroundEvent(filePath));
                 Intent intent1 = new Intent(getApplicationContext(), OpenActivity.class);
+                intent1.putExtra("fileName", fileName);
+                intent1.putExtra("filePath", filePath);
                 startActivity(intent1);
             }
         });

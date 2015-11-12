@@ -14,6 +14,13 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,7 +28,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
 
 import ayushkumar.smartroomsop.events.ContinueDrawingBackgroundEvent;
 import ayushkumar.smartroomsop.events.ContinueDrawingEvent;
@@ -29,10 +35,13 @@ import ayushkumar.smartroomsop.events.StartDrawingBackgroundEvent;
 import ayushkumar.smartroomsop.events.StartDrawingEvent;
 import ayushkumar.smartroomsop.events.StopDrawingBackgroundEvent;
 import ayushkumar.smartroomsop.events.StopDrawingEvent;
+import ayushkumar.smartroomsop.events.UploadProjectBackgroundEvent;
+import ayushkumar.smartroomsop.events.UploadProjectResultEvent;
 import ayushkumar.smartroomsop.interfaces.AudioRecordListener;
 import ayushkumar.smartroomsop.model.InfoModel;
 import ayushkumar.smartroomsop.model.InputModel;
 import ayushkumar.smartroomsop.model.PageEndTimesModel;
+import ayushkumar.smartroomsop.model.ProjectInfoModel;
 import ayushkumar.smartroomsop.util.BaseActivity;
 import ayushkumar.smartroomsop.util.Constants;
 import ayushkumar.smartroomsop.view.BaseView;
@@ -56,6 +65,8 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
     Menu menu;
     private Boolean animationPlaying = false;
     MediaPlayer mPlayer;
+    OkHttpClient client;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +87,9 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
         (findViewById(R.id.bt_prev)).setOnClickListener(this);
         (findViewById(R.id.bt_play)).setOnClickListener(this);
         (findViewById(R.id.bt_next)).setOnClickListener(this);
+
+        client = new OkHttpClient();
+
 
     }
 
@@ -182,6 +196,35 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
                 currentPage--;
                 lastTime = null;
                 return true;
+
+            case R.id.action_upload:
+                Log.d(TAG, "Upload clicked");
+                initFile(this);
+                Gson gson = new Gson();
+
+                String title = getIntent().getStringExtra("fileName");
+                String description = "";
+
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(infoFile));
+                    br.readLine();
+                    br.readLine();
+                    String line = br.readLine();
+                    ProjectInfoModel projectInfoModel = gson.fromJson(line, ProjectInfoModel.class);
+
+                    title = projectInfoModel.getName();
+                    description = projectInfoModel.getDescription();
+
+                }catch(FileNotFoundException f){
+                    Log.e(TAG, f.getMessage());
+                }catch (IOException e){
+                    Log.e(TAG, e.getMessage());
+                }
+
+                File file = new File(getIntent().getStringExtra("filePath"));
+                EventBus.getDefault().post(new UploadProjectBackgroundEvent(title, description, file));
+
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -432,4 +475,63 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
             mPlayer = null;
         }
     }
+
+    public Boolean uploadFile(String serverURL, String title, String description, File file) {
+        try {
+
+            RequestBody requestBody = new MultipartBuilder()
+                    .type(MultipartBuilder.FORM)
+                    .addFormDataPart(Constants.file, file.getName(),
+                            RequestBody.create(MediaType.parse("application/smartroom"), file))
+                    .addFormDataPart(Constants.title, title)
+                    .addFormDataPart(Constants.description, description)
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url(serverURL)
+                    .post(requestBody)
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+
+                @Override
+                public void onFailure(Request request, IOException e) {
+                    // Handle the error
+                    Log.d(TAG, "OkHTTPError : " + e.getMessage());
+                    EventBus.getDefault().post(new UploadProjectResultEvent("Upload unsuccessful :("));
+                }
+
+                @Override
+                public void onResponse(Response response) throws IOException {
+                    if (!response.isSuccessful()) {
+                        // Handle the error
+                        Log.d(TAG, "OkHTTPError : Response unsuccessful");
+                        EventBus.getDefault().post(new UploadProjectResultEvent("Upload unsuccessful :("));
+                        return;
+                    }
+                    // Upload successful
+                    Log.d(TAG, "Upload successful");
+                    EventBus.getDefault().post(new UploadProjectResultEvent("Upload successful :)"));
+                }
+            });
+
+            return true;
+        } catch (Exception ex) {
+            // Handle the error
+        }
+        return false;
+    }
+
+    public void onEventBackgroundThread(UploadProjectBackgroundEvent uploadEvent){
+        if(uploadFile(Constants.upload_url, uploadEvent.getTitle(), uploadEvent.getDescription(), uploadEvent.getFile())){
+            Log.d(TAG, "Added to OkHttp queue");
+        }else{
+            Log.d(TAG, "Couldn't add to OkHttp queue");
+        }
+    }
+
+    public void onEventMainThread(UploadProjectResultEvent uploadProjectResultEvent){
+        Toast.makeText(getApplicationContext(), uploadProjectResultEvent.getResult(), Toast.LENGTH_SHORT).show();
+    }
+
 }
