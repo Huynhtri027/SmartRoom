@@ -31,12 +31,15 @@ public class CreateInfoActivity extends AppCompatActivity {
     private void validateInputs() {
         TextInputLayout til1 = (TextInputLayout) findViewById(R.id.til1);
         TextInputLayout til2 = (TextInputLayout) findViewById(R.id.til2);
+        TextInputLayout til3 = (TextInputLayout) findViewById(R.id.til2);
 
         EditText name_et = (EditText) findViewById(R.id.name_et);
         EditText desc_et = (EditText) findViewById(R.id.desc_et);
+        EditText author_et = (EditText) findViewById(R.id.author_et);
 
         String name = name_et.getText().toString();
         String desc = desc_et.getText().toString();
+        String author = author_et.getText().toString();
         boolean validated = true;
 
         if(name.equals("")){
@@ -51,10 +54,17 @@ public class CreateInfoActivity extends AppCompatActivity {
         }else {
             til2.setError(null);
         }
+        if(author.equals("")){
+            til3.setError("Author cannot be blank");
+            validated = false;
+        }else{
+            til3.setError(null);
+        }
 
         if(validated){
             Intent i = new Intent(this, CreateActivity.class);
             i.putExtra("name", name);
+            i.putExtra("author", author);
             i.putExtra("description", desc);
             startActivity(i);
             finish();

@@ -363,7 +363,7 @@ public class BaseView extends View {
     }
 
 
-    public void saveData(String projectName, String projectDescription) {
+    public void saveData(String projectName, String projectDescription, String author) {
 
         //TODO: Display ProgressBar for saving data. (Start an IntentService maybe?)
 
@@ -393,7 +393,7 @@ public class BaseView extends View {
             e.printStackTrace();
         }
 
-        ProjectInfoModel projectInfoModel = new ProjectInfoModel(projectName, projectDescription);
+        ProjectInfoModel projectInfoModel = new ProjectInfoModel(projectName, projectDescription, author);
         String projectInfo = gson.toJson(projectInfoModel) + "\n";
         try {
             infoFileOutputStream.write(projectInfo.getBytes());

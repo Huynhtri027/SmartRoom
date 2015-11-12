@@ -23,6 +23,19 @@
             android:hint="Name of project (max 15 characters)"/>
 
     </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/til3">
+        <EditText
+            android:id="@+id/author_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLength="30"
+            android:hint="Author of project (max 30 characters)"/>
+
+    </android.support.design.widget.TextInputLayout>
     
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"

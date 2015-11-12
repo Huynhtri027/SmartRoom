@@ -60,6 +60,11 @@
             android:label="@string/title_activity_create_info"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name=".ProjectInfoActivity"
+            android:label="@string/title_activity_project_info"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>

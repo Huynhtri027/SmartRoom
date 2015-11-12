@@ -1,6 +1,7 @@
 package ayushkumar.smartroomsop;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -96,23 +97,25 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
+        setAnimationPlaying(false);
 
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
-
+        Log.d(TAG, "onPause");
         stopPlaying();
-
-        if (fileInputStream != null) {
+        setAnimationPlaying(false);
+        super.onPause();
+        /*if (fileInputStream != null) {
             try {
                 fileInputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
             }
-        }
+        }*/
     }
 
     @Override
@@ -175,7 +178,7 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_play:
+            /*case R.id.action_play:
                 Log.d(TAG, "Play");
                 baseView.clearCanvasForNextPage();
                 lastTime = null;
@@ -195,7 +198,11 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
                 baseView.clearCanvasForNextPage();
                 currentPage--;
                 lastTime = null;
-                return true;
+                return true;*/
+            case R.id.action_info:
+                Intent projectInfoIntent = new Intent(this, ProjectInfoActivity.class);
+                startActivity(projectInfoIntent);
+                break;
 
             case R.id.action_upload:
                 Log.d(TAG, "Upload clicked");
@@ -237,7 +244,7 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
         return true;
     }
 
-    @Override
+    /*@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem nextPageMenuItem = menu.findItem(R.id.action_nextpage);
         MenuItem prevPageMenuItem = menu.findItem(R.id.action_prevpage);
@@ -263,7 +270,7 @@ public class OpenActivity extends BaseActivity implements AudioRecordListener, V
             }
         }
         return true;
-    }
+    }*/
 
     private void playFromJsonFile(){
         initFile(this);

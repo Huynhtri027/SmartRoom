@@ -66,8 +66,6 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
         baseView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         ((LinearLayout)findViewById(R.id.baseview_ll)).addView(baseView, 0);
 
-        /*(findViewById(R.id.bt_prev)).setOnClickListener(this);
-        (findViewById(R.id.bt_play)).setOnClickListener(this);*/
         (findViewById(R.id.bt_next)).setOnClickListener(this);
 
     }
@@ -94,15 +92,6 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
                 baseView.clearCanvasForNextPage();
                 break;
 
-            /*case R.id.bt_play:
-                baseView.saveEndTimeForCurrentPage();
-                incrementTotalPages();
-                incrementCurrentPage();
-                baseView.clearCanvasForNextPage();
-                break;
-
-            case R.id.bt_prev:
-                break;*/
         }
     }
 
@@ -254,8 +243,9 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
 
         String projectName = getIntent().getStringExtra("name");
         String projectDescription = getIntent().getStringExtra("description");
+        String author = getIntent().getStringExtra("author");
 
-        baseView.saveData(projectName, projectDescription);
+        baseView.saveData(projectName, projectDescription, author);
 
         ExportProjectBackgroundEvent event = new ExportProjectBackgroundEvent(projectName);
         EventBus.getDefault().post(event);

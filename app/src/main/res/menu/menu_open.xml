@@ -2,12 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-    <item android:id="@+id/action_play" android:title="@string/action_play"
+   <!-- <item android:id="@+id/action_play" android:title="@string/action_play"
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_nextpage" android:title="@string/action_nextpage"
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_prevpage" android:title="@string/action_prevpage"
-        android:orderInCategory="100" app:showAsAction="never" />
+        android:orderInCategory="100" app:showAsAction="never" />-->
     <item android:id="@+id/action_upload" android:title="@string/action_upload"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_info" android:title="@string/action_info"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>

@@ -9,10 +9,12 @@ public class ProjectInfoModel {
 
     @SerializedName("name") private String name;
     @SerializedName("desc") private String description;
+    @SerializedName("author") private String author;
 
-    public ProjectInfoModel(String name, String description) {
+    public ProjectInfoModel(String name, String description, String author) {
         this.name = name;
         this.description = description;
+        this.author = author;
     }
 
     public String getName() {
@@ -29,5 +31,13 @@ public class ProjectInfoModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }
