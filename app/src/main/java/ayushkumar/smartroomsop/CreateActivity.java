@@ -110,6 +110,8 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
          */
         (findViewById(R.id.bt_next)).setOnClickListener(this);
 
+        baseView.initializeStartTimes();
+
     }
 
     /**
@@ -139,6 +141,8 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
                 incrementTotalPages();
                 incrementCurrentPage();
                 baseView.clearCanvasForNextPage();
+
+                baseView.initializeStartTimes();
                 break;
 
         }

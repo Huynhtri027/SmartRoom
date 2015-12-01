@@ -284,14 +284,13 @@ public class BaseView extends View {
     }
 
     /**
-     * Start of drawing upon touch. Function reused in both Craete & Open Mode
-     * @param x x-coordinate
-     * @param y y-coordinate
+     * Initialize start Times for Page.
+     * Called by the CreateActivity's onCreate function, and when the user clicks on Next Page.
      */
-    private void touch_start(float x, float y) {
+    public void initializeStartTimes(){
+        //TODO Find better way to approach this(As this has to be taken care of in other functions manually, eg clearCanvas)
 
         //Set start time if not already set
-        //TODO Find better way to approach this(As this has to be taken care of in other functions manually, eg clearCanvas)
         if(startTime == null){
             startTime = System.currentTimeMillis();
             if(!startTimeForAudioSet){
@@ -308,6 +307,14 @@ public class BaseView extends View {
             Log.d(TAG, "Sending signal to start recording audio");
 
         }
+    }
+
+    /**
+     * Start of drawing upon touch. Function reused in both Craete & Open Mode
+     * @param x x-coordinate
+     * @param y y-coordinate
+     */
+    private void touch_start(float x, float y) {
 
         //Store these coordinates
         if(createMode){
@@ -437,6 +444,11 @@ public class BaseView extends View {
         mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         invalidate();
 
+        /*
+         * Set start time to null
+         * On every page start, startTime is null.
+         * It is then set to the current system time, and audio starts recording after that
+         */
         startTime = null;
 
     }
