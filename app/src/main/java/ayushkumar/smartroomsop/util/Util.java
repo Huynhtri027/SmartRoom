@@ -3,7 +3,11 @@ package ayushkumar.smartroomsop.util;
 import android.os.Environment;
 
 /**
- * Created by ayush on 16/10/15.
+ * Created by Ayush Kumar on 16/10/15.
+ *
+ * @author Ayush Kumar
+ *
+ * Class for common utility functions
  */
 public class Util {
 

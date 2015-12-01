@@ -11,13 +11,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * Created by ayush on 18/10/15.
+ * Created by Ayush Kumar on 18/10/15.
+ *
+ * @author Ayush Kumar
+ *
+ * Utility file functions
  */
 public class FileUtil {
+
+    /*
+     * Tag to be used for Logging in Android Monitor (Logcat)
+     */
     private static final String TAG = "FileUtil";
 
     /**
-     * Utility to copy a file
+     * Utility function to copy a file
      * @param inputPath Input path - Should end in /
      * @param inputFile Input file name
      * @param outputPath Output file path - Should end in /
@@ -51,9 +59,7 @@ public class FileUtil {
         } catch (FileNotFoundException e) {
             Log.e(TAG, e.getMessage());
         } catch (IOException e) {
-            {
-                Log.e(TAG, e.getMessage());
-            }
+            Log.e(TAG, e.getMessage());
         }
 
     }

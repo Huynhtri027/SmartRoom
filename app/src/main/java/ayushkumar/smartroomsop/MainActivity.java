@@ -23,7 +23,11 @@ import ayushkumar.smartroomsop.util.Constants;
 import ayushkumar.smartroomsop.util.Util;
 
 /**
- * Created by Ayush on 22-01-15.
+ * Created by Ayush Kumar on 22-01-15.
+ *
+ * @author Ayush Kumar
+ *
+ * Activity used only for debugging purposes.
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -34,6 +38,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*
+         * Initialize buttons & set click listeners
+         */
         Button create = (Button) findViewById(R.id.button);
         Button open = (Button) findViewById(R.id.button2);
         Button read = (Button) findViewById(R.id.button3);

@@ -3,15 +3,50 @@ package ayushkumar.smartroomsop.model;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Ayush on 13-04-15.
+ * Created by Ayush Kumar on 13-04-15.
+ *
+ * @author Ayush Kumar
+ *
+ * Model class to support Serialisation & De-Serialisation.
+ * Serialisation uses the GSON library (https://github.com/google/gson)
+ *
+ * This model contains information about a single touch in a page
  */
 public class InputModel {
+
+    /*
+     * Page number of the touch in the Project
+     */
     @SerializedName("pg") private int pageNumber;
+
+    /*
+     * The type of touch (Can be start ('s'), move ('m'), or the end('e')
+     */
     private char type;
+
+    /*
+     * The x-coordinate of the touch
+     */
     private float x;
+
+    /*
+     * The y-coordinate of the touch
+     */
     private float y;
+
+    /*
+     * The time delay of the touch from the previous touch
+     */
     @SerializedName("t") private Long time;
 
+    /**
+     * Constructor
+     * @param pageNumber Page number of the touch in the Project
+     * @param type The type of touch (Can be start ('s'), middle ('m'), or the end('e')
+     * @param x The x-coordinate of the touch
+     * @param y The y-coordinate of the touch
+     * @param time The time delay of the touch from the previous touch
+     */
     public InputModel(int pageNumber, char type, float x, float y, Long time) {
         this.pageNumber = pageNumber;
         this.type = type;
@@ -19,6 +54,8 @@ public class InputModel {
         this.y = y;
         this.time = time;
     }
+
+    // Getters & Setters
 
     public int getPageNumber() {
         return pageNumber;

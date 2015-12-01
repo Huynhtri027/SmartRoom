@@ -1,18 +1,15 @@
 package ayushkumar.smartroomsop;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -27,7 +24,6 @@ import java.util.ArrayList;
 
 import ayushkumar.smartroomsop.events.ExportProjectBackgroundEvent;
 import ayushkumar.smartroomsop.events.ExportProjectResultEvent;
-import ayushkumar.smartroomsop.events.StartDrawingEvent;
 import ayushkumar.smartroomsop.interfaces.AudioRecordListener;
 import ayushkumar.smartroomsop.util.BaseActivity;
 import ayushkumar.smartroomsop.util.Constants;
@@ -35,21 +31,50 @@ import ayushkumar.smartroomsop.util.Util;
 import ayushkumar.smartroomsop.view.BaseView;
 import de.greenrobot.event.EventBus;
 
-
+/**
+ * @author Ayush Kumar
+ *
+ * Activity that allows user to create a Project
+ */
 public class CreateActivity extends BaseActivity implements AudioRecordListener, View.OnClickListener {
 
+    /*
+     * Paint object to be used for BaseView's path (Path drawn by the user)
+     */
     Paint mPaint;
+
+    /*
+     * Instance of BaseView (View to be used for drawing by the user)
+     */
     BaseView baseView;
+
+    /*
+     * Count of total pages
+     */
     int totalPages = 1;
+
+    /*
+     * Currently active page
+     */
     int currentPage = 1;
 
+    /*
+     * Tag to be used for logging in Android Monitor (LogCat)
+     */
     private static final String TAG = "CreateActivity";
+
+    /*
+     * MediaRecorder object to record audio
+     */
     MediaRecorder mRecorder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /*
+         * Create Paint object to be passed to BaseView to decide attributes of Path object of drawing
+         */
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
@@ -59,17 +84,38 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(12);
 
+        /*
+         * Initialize the BaseView view object
+         */
         baseView = new BaseView(this, mPaint, true);
+
+        /*
+         * Attach audio listener to BaseView
+         */
         baseView.setAudioRecordListener(this);
+
+        /*
+         * Set layout of this activity
+         */
         setContentView(R.layout.activity_create);
 
+        /*
+         * Add baseView(canvas) to the view hierarchy of this activity
+         */
         baseView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         ((LinearLayout)findViewById(R.id.baseview_ll)).addView(baseView, 0);
 
+        /*
+         * Set click listener on Next Page button
+         */
         (findViewById(R.id.bt_next)).setOnClickListener(this);
 
     }
 
+    /**
+     * Set Paint object's color
+     * @param color Color
+     */
     public void colorChanged(int color) {
         mPaint.setColor(color);
     }
@@ -86,6 +132,9 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.bt_next:
+                /*
+                 * Click on Next Page
+                 */
                 baseView.saveEndTimeForCurrentPage();
                 incrementTotalPages();
                 incrementCurrentPage();
@@ -104,6 +153,9 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
 
         switch (id) {
             case R.id.action_clear:
+                /*
+                 * Click on Clear Canvas
+                 */
                 baseView.clearCanvas();
                 return true;
            /* case R.id.action_size:
@@ -111,18 +163,10 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
             case R.id.action_color:
                 baseView.setPaintColor(Color.BLUE);
                 return true;*/
-            case R.id.action_nextpage:
-                baseView.saveEndTimeForCurrentPage();
-                incrementTotalPages();
-                incrementCurrentPage();
-                baseView.clearCanvasForNextPage();
-                return true;
-            case R.id.action_prevpage:
-                if(currentPage > 1){
-                    decrementCurrentPage();
-                }
-                return true;
             case R.id.action_export:
+                /*
+                 * Export Project
+                 */
                 baseView.saveEndTimeForCurrentPage();
                 stopRecording();
                 saveData();
@@ -133,15 +177,11 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
         return super.onOptionsItemSelected(item);
     }
 
-    public void onEvent(StartDrawingEvent startDrawingEvent) {
-        Toast.makeText(this, "start drawing", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
+    /*@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem nextPageMenuItem = menu.findItem(R.id.action_nextpage);
         MenuItem prevPageMenuItem = menu.findItem(R.id.action_prevpage);
-        /*
+        *//*
 
         //Enable this if we need previous mode availability in Create mode too.
         //Changes will have to be made in the rest of the code to bring the desired results too.
@@ -149,28 +189,40 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
             prevPageMenuItem.setEnabled(false);
         }else{
             prevPageMenuItem.setEnabled(true);
-        }*/
+        }*//*
         prevPageMenuItem.setEnabled(false);
         prevPageMenuItem.setVisible(false);
 
         return true;
-    }
+    }*/
 
+    /**
+     * Increment total pages and update in baseView too
+     */
     public void incrementTotalPages(){
         totalPages++;
         baseView.setTotalPages(baseView.getTotalPages() + 1);
     }
 
+    /**
+     * Decrement total pages and update in baseView too
+     */
     public void decrementTotalPages() {
         totalPages--;
         baseView.setTotalPages(baseView.getTotalPages() - 1);
     }
 
+    /**
+     * Increment current page and update in baseView too
+     */
     public void incrementCurrentPage(){
         currentPage++;
         baseView.setCurrentPage(baseView.getCurrentPage() + 1);
     }
 
+    /**
+     * Decrement current page and update in baseView too
+     */
     public void decrementCurrentPage() {
         currentPage--;
         baseView.setCurrentPage(baseView.getCurrentPage() - 1);
@@ -178,6 +230,9 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
 
     @Override
     public void onBackPressed() {
+        /*
+         * Make sure all information is saved if back is pressed
+         */
         baseView.saveEndTimeForCurrentPage();
         stopRecording();
         saveData();
@@ -188,21 +243,33 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
 
     @Override
     protected void onPause() {
+        /*
+         * Make sure all information is saved on pause of activity
+         */
         baseView.saveEndTimeForCurrentPage();
         stopRecording();
         saveData();
         super.onPause();
     }
 
+    /**
+     * Start recording of Audio
+     */
     @Override
     public void startRecording() {
-        Log.d(TAG, "Received signal to start rec");
+//        Log.d(TAG, "Received signal to start rec");
 
         if(mRecorder == null){
+            /*
+             * Initialize MediaRecorder
+             */
             mRecorder = new MediaRecorder();
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 
+            /*
+             * Set file to be used for storing recorded Audio
+             */
             String audioFile = getApplicationContext().getExternalFilesDir(null) + File.separator + Constants.audioFile;
             mRecorder.setOutputFile(audioFile);
             mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
@@ -213,11 +280,17 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
                 Log.e(TAG, "prepare() failed");
             }
 
+            /*
+             * Start recording
+             */
             mRecorder.start();
         }
 
     }
 
+    /**
+     * Stop recording of Audio
+     */
     @Override
     public void stopRecording() {
 
@@ -229,36 +302,67 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
         }
     }
 
+    /**
+     * Cant play audio in this mode
+     * @throws UnsupportedOperationException
+     */
     @Override
     public void startPlaying() throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Playing audio not supported in Create Mode");
     }
 
+    /**
+     * Cant play audio in this mode
+     * @throws UnsupportedOperationException
+     */
     @Override
     public void stopPlaying() throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Playing audio not supported in Create Mode");
     }
 
+    /**
+     * Delegate to baseView to save the data
+     * It'll store the data in appropriate files in JSON format.
+     */
     private void saveData() {
 
+        /*
+         * Get information about project from the intent that started this activity
+         */
         String projectName = getIntent().getStringExtra("name");
         String projectDescription = getIntent().getStringExtra("description");
         String author = getIntent().getStringExtra("author");
 
+        /*
+         * Delegate to baseView's save data method
+         */
         baseView.saveData(projectName, projectDescription, author);
 
+        /*
+         * After saving in files is done, export the Project to a single file in the background
+         */
         ExportProjectBackgroundEvent event = new ExportProjectBackgroundEvent(projectName);
         EventBus.getDefault().post(event);
     }
 
+    /**
+     * Perform export of Project in a background thread
+     * @param exportProjectEvent Event containing information about exporting
+     */
     public void onEventBackgroundThread(ExportProjectBackgroundEvent exportProjectEvent) {
 
+        /*
+         * Convert raw name to file name to be used for creating file
+         */
         String projectName = Util.convertStringWithSpacesToOneString(exportProjectEvent.getName());
 
         Context c = getApplicationContext();
 
         // baseString takes individual files(info, data, audio etc) from app's private data directory
 
+        /*
+         * Initialize File objects from corresponding locations
+         */
         String base = c.getExternalFilesDir(null) + File.separator;
         String audioFileString = base + Constants.audioFile;
         String dataFileString = base + Constants.filename;
@@ -272,18 +376,26 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
         Log.d(TAG, " " + dataFile.getAbsolutePath() + ", Exists:" + dataFile.exists());
         Log.d(TAG, " " + infoFile.getAbsolutePath() + ", Exists:" + infoFile.exists());
 
+        /*
+        Add files to ArrayList to be zipped
+         */
         ArrayList<File> filesToBeZipped = new ArrayList<>();
         filesToBeZipped.add(audioFile);
         filesToBeZipped.add(dataFile);
         filesToBeZipped.add(infoFile);
 
-
+        /*
+         * Set Export location
+         */
         String baseExportDirString = Environment.getExternalStorageDirectory().getAbsolutePath()
                 + File.separator + Constants.app_directory + File.separator + projectName + File.separator;
         Log.d(TAG, "baseExportDirString : " + baseExportDirString);
 
         try {
 
+            /*
+             * Create File object for base directory, and create directory structure if necessary
+             */
             File baseExportDir = new File(baseExportDirString);
             if(baseExportDir.mkdirs()){
                 Log.d(TAG, "Make directories returned true");
@@ -297,13 +409,23 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
                 Log.d(TAG, baseExportDirString + " is not a directory");
             }
 
+            /*
+             * Set name of the Project file to be exported
+             * Add appropriate extension
+             */
             String exportedFileName = projectName + Constants.extension;
 
+            /*
+             * If Project file already exists, then delete it
+             */
             File zipFileDel = new File(baseExportDirString + exportedFileName);
             if(zipFileDel.exists()){
                 zipFileDel.delete();
             }
 
+            /*
+             * Create new zipped file
+             */
             ZipFile zipFile = new ZipFile(baseExportDirString + exportedFileName);
             ZipParameters parameters = new ZipParameters();
 
@@ -341,8 +463,14 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
 
             parameters.setPassword("password");
 
+            /*
+             * Zip the file
+             */
             zipFile.createZipFile(filesToBeZipped, parameters);
 
+            /*
+             * Check if final zipped Project file has been created successfully
+             */
             File fileExistCheck = new File(baseExportDirString + exportedFileName);
             if(fileExistCheck.exists()){
                 EventBus.getDefault().post(new ExportProjectResultEvent(true));
@@ -355,7 +483,15 @@ public class CreateActivity extends BaseActivity implements AudioRecordListener,
     }
 
 
+    /**
+     * Show Project export result in Main Thread (UI Thread)
+     * @param projectResultEvent Event containing information about the Project export result
+     */
     public void onEventMainThread(ExportProjectResultEvent projectResultEvent){
+
+        /*
+         * Check if file is created, and update UI accordingly
+         */
         if(projectResultEvent.isFileExists()){
             Toast.makeText(getApplicationContext(), "Project Export Successful :)", Toast.LENGTH_SHORT).show();
         }else {

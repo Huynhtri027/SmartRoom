@@ -6,7 +6,16 @@ import android.view.View;
 import ayushkumar.smartroomsop.R;
 
 /**
- * Created by ayush on 18/10/15.
+ * Created by Ayush Kumar on 18/10/15.
+ *
+ * @author Ayush Kumar
+ *
+ * Taken from http://www.littlerobots.nl/blog/Handle-Android-RecyclerView-Clicks/
+ *
+ * The ability to add an OnItemClickListener that triggers when an item is clicked in a RecyclerView
+ * is not present by default. This class adds an API to add the same.
+ *
+ * You also need to define R.id.item_click_support using ids.xml
  */
 public class ItemClickSupport {
     private final RecyclerView mRecyclerView;

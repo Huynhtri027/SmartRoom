@@ -1,10 +1,15 @@
 package ayushkumar.smartroomsop.util;
 
 /**
- * Created by Ayush on 22-01-15.
+ * Created by Ayush Kumar on 22-01-15.
+ *
+ * @author Ayush Kumar
+ *
+ * Utility class to hold all static constants
  */
-public class Constants {
+public final class Constants {
 
+    // App specific constants
     public static final String filename = "data.bin";
     public static final String infofile = "info.bin";
     public static final String audioFile = "audio.3gp";

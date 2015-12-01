@@ -23,7 +23,12 @@ import ayushkumar.smartroomsop.util.BaseActivity;
 import ayushkumar.smartroomsop.util.Constants;
 
 /**
- * Created by Ayush on 22-01-15.
+ * Created by Ayush Kumar on 22-01-15.
+ *
+ * @author Ayush Kumar
+ *
+ * Activity to show information associated with a Project
+ * For Debugging purposes only
  */
 public class ReadTextActivity extends ActionBarActivity {
 

@@ -3,51 +3,79 @@ package ayushkumar.smartroomsop;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-
-import ayushkumar.smartroomsop.model.InfoModel;
-import ayushkumar.smartroomsop.model.PageEndTimesModel;
 import ayushkumar.smartroomsop.model.ProjectInfoModel;
 import ayushkumar.smartroomsop.util.Constants;
 
+/**
+ * @author Ayush Kumar
+ *
+ * This activity shows the information about the Project
+ */
 public class ProjectInfoActivity extends AppCompatActivity {
 
-
+    /*
+     * Tag to be used for logging in Android Monitor (LogCat)
+     */
     private static final String TAG = "ProjectInfoActivity";
+
+    /*
+     * File to store all InputModels in. This corresponds to all touches in the Project
+     */
     File infoFile;
+
+    /*
+     * File to store information of the Project
+     */
     FileInputStream infoFileInputStream;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        /*
+         * Set up the UI
+         */
         setContentView(R.layout.activity_project_info);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        /*
+         * Initialize the files & GSON
+         */
         initFile(this);
         Gson gson = new Gson();
+
+        /*
+         * Parse the files line by line
+         */
         try {
             BufferedReader br = new BufferedReader(new FileReader(infoFile));
+
+            /*
+             * Skip unnecessary lines
+             */
             br.readLine();
             br.readLine();
+
             String line = br.readLine();
             ProjectInfoModel projectInfoModel = gson.fromJson(line, ProjectInfoModel.class);
 
+            /*
+             * Show the information in Text Views
+             */
             TextView title_tv = (TextView)findViewById(R.id.title_tv);
             TextView author_tv = (TextView) findViewById(R.id.author_tv);
             TextView desc_tv = (TextView) findViewById(R.id.desc_tv);
@@ -64,6 +92,10 @@ public class ProjectInfoActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Initialize Info File (Information about Project) & Data File (Information about touches)
+     * @param context Context
+     */
     public void initFile(Context context) {
         String state = Environment.getExternalStorageState();
         boolean check;
