@@ -14,32 +14,28 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".CreateActivity"
-            android:label="Create Mode" >
+            android:label="@string/title_activity_create" >
         </activity>
         <activity
             android:name=".ReadTextActivity"
-            android:label="Read Mode" >
+            android:label="@string/title_activity_read" >
         </activity>
         <activity
             android:name=".OpenActivity"
-            android:label="Open Mode" >
-        </activity>
-        <activity
-            android:name=".util.BaseActivity"
-            android:label="@string/title_activity_base" >
+            android:label="@string/title_activity_open" >
         </activity>
         <activity
             android:name=".LoadActivity"
             android:label="@string/title_activity_load"
             android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
